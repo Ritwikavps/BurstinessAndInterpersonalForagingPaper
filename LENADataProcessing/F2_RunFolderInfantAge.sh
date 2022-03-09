@@ -16,12 +16,12 @@
 # 9.) Navigate to directory where "F2_RunFolder_InfantAge.sh" is located
 # 10.) Run this file (sh F2_RunFolder_InfantAge.sh )
 
-cd ~/Google\ Drive/research/vocalisation/Pre_registration_followu/Data/LENAData/ItsFiles/
+cd ~/Google\ Drive/My\ Drive/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/Data/LENAData/ItsFiles
 
 #go through the .its files
 for itsfile in *.its 
 	#replace '.its' with 'InfantAge.csv' for o/p file name
 	do outfile=`echo $itsfile | sed 's/\.its/InfantAge\.csv/g'`; 
 	   #run perl script to get dob and date of recording into csv
-	   perl ~/Google\ Drive/vocalisation/Pre_registration_followu/CodeForGitHub/LENADataProcessing/GetInfantAgeFromItsFile.pl $itsfile $outfile
+	   perl ~/Google\ Drive/My\ Drive/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/CodeForGitHub/LENADataProcessing/GetInfantAgeFromItsFile.pl $itsfile $outfile
 	   done

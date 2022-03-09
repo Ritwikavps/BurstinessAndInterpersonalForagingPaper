@@ -6,7 +6,7 @@ clc
 %and write the info into a single .csv file
 
 %go to folder ith .csv files
-cd '/Volumes/GoogleDrive/My Drive/research/vocalisation/Pre_registration_followu/Data/LENAData/ItsFiles'
+cd '/Volumes/GoogleDrive/My Drive/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/Data/LENAData/ItsFiles'
 
 aa = dir('*InfantAge.csv'); %get all relevant .csv files
 
@@ -45,6 +45,6 @@ for i = 1:numel(aa) %go through .csv files
 end
 
 T = table(FileNameRoot,InfantID,InfantAge);
-writetable(T,'/Volumes/GoogleDrive/My Drive/research/vocalisation/Pre_registration_followu/Data/MetadataInfAgeAndID.csv')
+writetable(T,'/Volumes/GoogleDrive/My Drive/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/Data/LENAData/MetadataInfAgeAndID.csv')
 
 delete *InfantAge.csv

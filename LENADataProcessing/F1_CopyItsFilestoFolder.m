@@ -19,9 +19,9 @@ clc
      %other .its file syou would liek to not include, please delete them
      %manually after copying, or adapot this script accordingly
     
-cd ~/Box/'IVFCR Coding'/LENAExports %Insert your path
+cd /Users/ritwikavps/Library/CloudStorage/Box-Box/'IVFCR Coding'/LENAExports/ %Insert your path
 
-destinationpath = '/Volumes/GoogleDrive/My Drive/research/vocalisation/Pre_registration_followu/Data/LENAData/ItsFiles'; %Insert your destination path
+destinationpath = '/Volumes/GoogleDrive/My Drive/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/Data/LENAData/ItsFiles'; %Insert your destination path
 
 %All folders with LENA data are in here. Use dir to get these
 aa = dir;
@@ -63,7 +63,7 @@ for i = 1:numel(aa) %loop through directory list
         end
         
       %Go back to IVFCR Coding folder so the loop can repeat  
-      cd ~/Box/'IVFCR Coding'/LENAExports
+      cd /Users/ritwikavps/Library/CloudStorage/Box-Box/'IVFCR Coding'/LENAExports/
       
     end
 end

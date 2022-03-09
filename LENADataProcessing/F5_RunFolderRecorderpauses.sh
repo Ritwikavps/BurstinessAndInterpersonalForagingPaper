@@ -20,9 +20,9 @@
 # 9.) Navigate to directory where "RunFolder_readits.sh" is located
 # 10.) Run this file (sh RunFolder_readits.sh )
 
-cd ~/Google\ Drive/research/vocalisation/Pre_registration_followu/Data/LENAData/ItsFiles/  
+cd ~/Google\ Drive/My\ Drive/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/Data/LENAData/ItsFiles  
 for itsfile in *.its
 	do outfile=`echo $itsfile | sed 's/\.its/_PauseTimes\.txt/g'`;
-	perl ~/Google\ Drive/research/vocalisation/Pre_registration_followu/CodeForGitHub/LENADataProcessing/recorderpauses.pl $itsfile $outfile
+	perl ~/Google\ Drive/My\ Drive/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/CodeForGitHub/LENADataProcessing/recorderpauses.pl $itsfile $outfile
 	done
 	

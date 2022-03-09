@@ -20,9 +20,9 @@
 # 8.) Navigate to directory where "RunFolder_segments.sh" is located
 # 9.) Run the file (sh RunFolder_segments.sh )
 
-cd ~/Google\ Drive/research/vocalisation/Pre_registration_followu/Data/LENAData/ItsFiles/
+cd ~/Google\ Drive/My\ Drive/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/Data/LENAData/ItsFiles
 for itsfile in *.its
 	do outfile=`echo $itsfile | sed 's/\.its/_Segments\.csv/g'`  
-	perl ~/Google\ Drive/research/vocalisation/Pre_registration_followu/CodeForGitHub/LENADataProcessing/segments.pl $itsfile $outfile 
+	perl ~/Google\ Drive/My\ Drive/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/CodeForGitHub/LENADataProcessing/segments.pl $itsfile $outfile 
 done
 
