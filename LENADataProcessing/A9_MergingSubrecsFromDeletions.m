@@ -118,7 +118,7 @@ for i = 1:numel(InfantAgeDays)
     elseif (InfantAgeDays(i)/30 > 17.5) && (InfantAgeDays(i)/30 < 19)
         InfantAgeMonth(i,1) = 18;
     else
-        InfantAgeMonth(i,1) = round(InfantAgeDays(i)); 
+        InfantAgeMonth(i,1) = round(InfantAgeDays(i)/30); 
     end
 end
 
