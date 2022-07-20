@@ -12,4 +12,4 @@ HUMLabelDataProcessing (should be A3_HUMLabelDataProcessing) contains code to ex
 LENADataAnalysis contains code to analyse data (acoustics and speaker labels) obtained from the LENADataProcessing pipeline. 
 
 **
-Please make sure that all paths are correct before executing scripts 
+Please make sure that all paths are correct before executing scripts**
