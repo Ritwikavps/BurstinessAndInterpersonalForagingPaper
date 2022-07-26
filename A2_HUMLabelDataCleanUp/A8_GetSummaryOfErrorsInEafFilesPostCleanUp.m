@@ -35,7 +35,7 @@ for i = 1:numel(FilesFromR_dir)
 
     TierInfoTable = readtable(FilesFromR_dir(i).name);
     EafNameVec = cell(size(TierInfoTable.StartTimeRef));
-    [EafNameVec{:}] = deal(erase('FilesFromR_dir(i).name','_Edited.csv'));
+    [EafNameVec{:}] = deal(erase(FilesFromR_dir(i).name,'_Edited.csv'));
     TierInfoTable.EafFname = EafNameVec;
     %Clumn names: StartTimeRef, StartTimeLineNum, EndTimeRef, EndTimeLineNum, AnnotId, AnnotIdLineNum, Annotation, AnnotationLineNum
     %TierTypeVec, StartTimeVal, EndTimeVal
