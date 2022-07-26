@@ -12,6 +12,7 @@ This folder contains code used to clean up human-listener labelled data (.eaf fi
       - Annotations with start time > end time
   - Get details of annotations that are outside the bound of the coding spreadsheet that determines the three 5-minute segemnts to be annotated by human listeners (A5_GetAnnotationsOutsideCodingSpreadsheetBounds.m)
   - Edit out simple errors in annotations (additional white space or non-text character in annotation text or multiple occurences of the correct annotation code, eg. 'T T' in the adult utterahce direction tier), delete annotations outside coding spreadsheet bounds, and save cleaned-up .eaf files (A6_GetEditedEafFiles.R)
+  - Re-run the parsing code with the appropraite directory locations to get cleaned-up data (A2_ParseEafFilesAndFlagErrors_Main.R)
   - Get summaries of remaining errors in cleaned-up .eaf files and check if the clean-up worked (A7_GetAnnotationsOutsideCodingSpreadsheetBounds_PostCleanup.m, A8_GetSummaryOfErrorsInEafFilesPostCleanUp.m)
 
 Once the clean-up is done, the steps to parse info from the .eaf files and write to .csv can be repeated to obtain clean data. 
