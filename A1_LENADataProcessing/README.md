@@ -11,3 +11,4 @@ This folder contains code used to extract and pre-process LENA data used in this
   - Incorporate information about recorder pauses into the .csv files with acoustics and time series data outputed by A6_GetTSBatchProcess.m (A7_IncorporatePauseTimesInTSAcoustics.m).
   - Compute whether a vocalisation received a response from the other speaker type (A8_GetResponseData.m) for response intervals of 1, 2, and 5 seconds. This script also computes response data for adult speakers to child speech related vocalisations and vice-versa; adult speakers to child non-speech related vocalisations and vice-versa; and adult speakers to all child vocalisations and vice-versa.
   - Merge all subrecordings from a given child at a given age (A9_MergingSubrecsFromDeletions.m). Subrecordings are present in cases where there have been deletions in the recordings per participants' requests after the recording was complete. 
+  - Get z-scored acoustics data (A10_GettingZscoredData.m)
