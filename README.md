@@ -1,8 +1,8 @@
 # IVFCR_ExtendedStudy_LENAValidation
 
-This directory contains code that analyses day-long recordings of infant and adult caregiver vocalisations to validate findings from our previous study (Ritwika et al. 2020) and to test the validity of the LENA automatic labelling using an extended collection of human-labelled data
+This directory contains code that extracts, cleans up, processes, and analyses day-long recordings of infant and adult caregiver vocalisations to validate findings from our previous study (Ritwika et al. 2020) and to test the validity of the LENA automatic labelling using an extended collection of human-labelled data
 
-(The directory anmes are--or should be--indexed as A1, A2, etc. to indicate the suggested order to follow. If all directories are not currently named with a prefix of the form 'A<number>', they will be in future updates)
+(The directory names are--or should be--indexed as A1, A2, etc. to indicate the suggested order to follow. If all directories are not currently named with a prefix of the form 'A<number>', they will be in future updates)
 
 LENADataProcessing (should be A1_LENADataProcessing) contains code to extract LENA labels as well as acoustics from .wav and .its files (MATLAB, Bash, and Perl). 
 
