@@ -108,7 +108,7 @@ for (i in 1:numel(aa)){                                 #
           if (NeedsEdit){
             Annotation = GetEditedAnnotation(Annotation)
             
-                                                                          print(myLine)
+                                                                          #print(myLine)
             
             #do the splitting of the line
             LineSplit_v1 = strsplit(myLine,'<ANNOTATION_VALUE')#this should give a list with 
@@ -120,7 +120,7 @@ for (i in 1:numel(aa)){                                 #
             #Now, we can reconstitute the line as LineSplit_v1(1)+<ANNOTATION_VALUE+>+Annotation+</ANNOTATION_VALUE>
             myLine = paste(LineSplit_v1[[1]][1],'<ANNOTATION_VALUE','>',Annotation,'</ANNOTATION_VALUE>',sep = '',collapse = NULL)
             
-                                                                          print(myLine)
+                                                                          #print(myLine)
 
           }
         }
