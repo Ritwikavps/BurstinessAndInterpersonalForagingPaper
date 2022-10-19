@@ -92,7 +92,7 @@ for (i in 1:numel(aa)){                                 #
         #if it is inf voc or adult utt dir tier, get the annotation
         if ((str_contains(AnnotTier,'Infant Voc Type',ignore.case = TRUE)) || (str_contains(AnnotTier,'Adult Utterance Dir',ignore.case = TRUE))){
           #Get annotation
-          Annotation = gsub('>',"",gsub('</ANNOTATION_VALUE>',"",gsub('<ANNOTATION_VALUE',"",myLine)))
+          Annotation = gsub('>',"",gsub('</ANNOTATION_VALUE>',"",gsub('<ANNOTATION_VALUE',"",str_trim(myLine))))
           
           #Check if annotation needs editing
           #first assign AllowedAnnot
@@ -108,6 +108,8 @@ for (i in 1:numel(aa)){                                 #
           if (NeedsEdit){
             Annotation = GetEditedAnnotation(Annotation)
             
+                                                                          print(myLine)
+            
             #do the splitting of the line
             LineSplit_v1 = strsplit(myLine,'<ANNOTATION_VALUE')#this should give a list with 
             #white space and '>X</ANNOTATION_VALUE>' (or if the original line is <ANNOTATION_VALUE/>X</ANNOTATION_VALUE>),
@@ -117,6 +119,8 @@ for (i in 1:numel(aa)){                                 #
             #We have already extracted the annotation and edited it
             #Now, we can reconstitute the line as LineSplit_v1(1)+<ANNOTATION_VALUE+>+Annotation+</ANNOTATION_VALUE>
             myLine = paste(LineSplit_v1[[1]][1],'<ANNOTATION_VALUE','>',Annotation,'</ANNOTATION_VALUE>',sep = '',collapse = NULL)
+            
+                                                                          print(myLine)
 
           }
         }
