@@ -8,14 +8,16 @@ This folder contains code used to clean up human-listener labelled data (.eaf fi
   - Edit out one specific .eaf file that has formatting errors (A2_1_Eaf0225_000602QuickFix.R). These errors are distinct from the errors the rest of the scripts deal with.
   - Parse .eaf files to get details of human listener labels in all tiers (A2_ParseEafFilesAndFlagErrors_Main.R). For each .eaf file, this script outputs a .csv file with the following info: Start time ref and Start time ref line number for each annotation, End time ref and End time ref line number for each annotation, Annotation ID and Annotation ID line number for each annotation, Annotation text and Annotation text line number for each annotation, Tier name for each annotation, Start time value (in ms) for eacha annotation, and End time value (in ms) for each annotation. This script also outputs a summary .txt file with info about whether an .eaf file is missing the adult orthographic annotation tier, adult utterance direction tier or the infant voc type tier.
   
-  This script works by picking out the time slot ids and the corresponding time value from the lines that contain that information (eg. <TIME_SLOT TIME_SLOT_ID="ts1" TIME_VALUE="172690"/>), and then matching the time slot ids in the lines containing the annotation details. In addition, this script also picks out the annotation text from the lines containing the annotation details. 
+  This script works by picking out the time slot ids and the corresponding time value from the lines that contain that information (eg. ```<TIME_SLOT TIME_SLOT_ID="ts1" TIME_VALUE="172690"/>```), and then matching the time slot ids in the lines containing the annotation details. In addition, this script also picks out the annotation text from the lines containing the annotation details. 
   
   For example, consider this annotation 'block':
+  ```
   <ANNOTATION>
       <ALIGNABLE_ANNOTATION ANNOTATION_ID="a37" TIME_SLOT_REF1="ts719" TIME_SLOT_REF2="ts720">
           <ANNOTATION_VALUE>R</ANNOTATION_VALUE>
       </ALIGNABLE_ANNOTATION>
   </ANNOTATION>
+  ```
   
   This script extracts the annotation id (a37), the start and end time slot refs (ts719, ts720), and the annotation text (R).
             
