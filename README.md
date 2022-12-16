@@ -10,7 +10,7 @@ A2_HUMLabelDataCleanUp contains code to clean-up human listener annotated data (
 
 A3_HUMLabelDataProcessing contains code to extract human listener labels and acoustics of labelled vocalisations from cleaned-up human listener annotation files (.eaf files). Code in A2_HUMLabelDataCleanUp and A1_LENADataProcessing MUST be executed before executing code in this directory. Alternatively, you can also work directly with .eaf files that have been cleaned-up. The final processed data obtained from the pipeline in this directory can be found at https://osf.io/5xp7z/
 
-LENADataAnalysis (should be A4_LENADataAnalysis) contains code to analyse data (acoustics and speaker labels) obtained from the LENADataProcessing pipeline. 
+A4_DataAnalysis) contains code to analyse data (acoustics and speaker labels). 
 
 ##
 Please make sure that all paths are correct before executing scripts
