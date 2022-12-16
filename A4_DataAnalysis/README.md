@@ -29,5 +29,7 @@ types predict acoustic step sizes between consecutive vocalisations by the same 
 
 A5_TimeFromLastInteraction_Vs_CategoricalStepSize contains code used to test whether elapsed time since the last infant-adult interaction predict 
 categorical step sizes between consecutive vocalisations by infant speakers.
+
+    [Note to self: Link schematics and data tables (either on OSF or here) and refer to them]
     
     
