@@ -1,0 +1,102 @@
+function DistTab = GetStepSizeTab(InputTab,SpkrType,OtherType,NAType,ResponseWindow)
+
+%This function computes step size vectors and intervocalisation interval
+%vector based on input table. It also removes step size entries associated
+%with the end of a subrecording
+
+%The input is a table that contains (at the very least) columns
+%('logf0_z','dB_z','duration','start','xEnd','SubrecEnd')
+%And the SpkrType, OtherType, and NAType strings (the last two string inputs are to compute responses): CHNSP, CHN, CHNNSP, or AN
+%And finally, the response window time (ResponseWindow) in seconds
+
+if sum(strcmpi(SpkrType,{'CHNSP','CHNNSP','CHN','AN'})) == 0
+    error('Incorrect SpkrType string')
+elseif sum(strcmpi(OtherType,{'CHNSP','CHNNSP','CHN','AN'})) == 0
+    error('Incorrect OtherType string')
+elseif sum(strcmpi(NAType,{'CHNSP','CHNNSP','CHN','AN'})) == 0
+    error('Incorrect NAType string')
+end
+
+if size(InputTab,1) <= 1  %mandatory checks ; if there is only one row, then this whole exercise is pointless.
+    DistTab = array2table(zeros(0,11));
+    return
+end
+
+%get section number info if applicable
+InputTabVarNames = InputTab.Properties.VariableNames;
+if isempty(InputTabVarNames(contains(InputTabVarNames,'SectionNum'))) %if there is NO column with section num info
+    SectionNumVec = GetSectionNumVec(InputTab); %get section number information
+    InputTab.SectionNum = SectionNumVec; %add section number information to InputTab
+elseif ~isempty(InputTabVarNames(contains(InputTabVarNames,'SectionNum5min')))
+    InputTab.SectionNum = InputTab.SectionNum5min;
+    InputTab = removevars(InputTab,{'SectionNum5min'});
+end
+
+if ~isempty(InputTabVarNames(contains(InputTabVarNames,'Annotation'))) %if there is Annotation col, then we know this is human label
+    %need to make speaker info CHNSP etc
+    SpkrTemp = InputTab.speaker;
+    SpkrTemp(contains(InputTab.Annotation,{'X','C'}) & contains(InputTab.speaker,'CHN')) = {'CHNSP'};
+    SpkrTemp(contains(InputTab.Annotation,{'R','L'}) & contains(InputTab.speaker,'CHN')) = {'CHNNSP'};
+    InputTab.speaker = SpkrTemp;
+    InputTab = removevars(InputTab,{'Annotation'});
+end
+
+U_SectionNumVec = unique(InputTab.SectionNum);
+
+%similarly, compute response
+ResponseVec = ComputeResponseVector(InputTab.start,InputTab.xEnd,InputTab.speaker,SpkrType,OtherType,NAType,ResponseWindow); %speaker = adult; other = CHNSP only; NAType = adult 
+InputTab.Response = ResponseVec; 
+
+InputTab = InputTab(contains(InputTab.speaker,SpkrType),:); %filter by speaker type
+
+if size(InputTab,1) <= 1 %check again if the filtered inputtab is empty
+    DistTab = array2table(zeros(0,11));
+    return
+end
+
+%create empty table to store distances
+DistTab = array2table(zeros(0,3)); 
+DistTab.Properties.VariableNames = {'DistPitch','DistAmp','DistDuration'};
+InterVocIntVec = []; %empty vector to store intervoc intervals
+
+%create empty table to store the rest of the info needed, after removing redundant or unnecessary cols: usually this would be response info
+if ~isempty(InputTabVarNames(contains(InputTabVarNames,'SubrecEnd'))) %if there is a column named SubrecEnd
+    DuplicateTab = removevars(InputTab(1,:),{'dB_z','logf0_z','start','xEnd','SubrecEnd','logDur_z'}); %thsi is just to get teh number of columns as well as variable names,
+else
+    DuplicateTab = removevars(InputTab(1,:),{'dB_z','logf0_z','start','xEnd','logDur_z'});
+end
+NumCols = size(DuplicateTab,2);
+RestOfTab = array2table(zeros(0,NumCols)); 
+RestOfTab.Properties.VariableNames = DuplicateTab.Properties.VariableNames;
+
+for i = 1:numel(unique(U_SectionNumVec)) %go through each unique section and get step sizes. This way, we don't add step sizes between subrecs
+
+    Section_SubTab = InputTab(InputTab.SectionNum == U_SectionNumVec(i),:); %pick out rows with the same section number
+
+    TempTab = varfun(@diff, Section_SubTab(:,{'logf0_z','dB_z','logDur_z'}), 'OutputFormat', 'table'); %compute distances for each section
+    TempTab.Properties.VariableNames = {'DistPitch','DistAmp','DistDuration'}; %    TempTab = varfun(@abs, TempTab, 'OutputFormat', 'table'); %get abs value
+    TempTab.DistPitch = abs(TempTab.DistPitch); %get abs values for amp and pitch distance but not duration
+    TempTab.DistAmp = abs(TempTab.DistAmp);
+    DistTab = [DistTab; TempTab];
+
+    %inter voc interval
+    InterVocIntVec  = [InterVocIntVec ; Section_SubTab.start(2:end) - Section_SubTab.xEnd(1:end-1)];
+
+    %get rest of the table to add to DistTab, after the end of the loop. Note that the last entry in each 
+    %column has to be removed, since this isn't going to be associated with a step size
+    if ~isempty(InputTabVarNames(contains(InputTabVarNames,'SubrecEnd'))) %if there is a column named SubrecEnd
+        Section_SubTab = removevars(Section_SubTab,{'dB_z','logf0_z','start','xEnd','SubrecEnd','logDur_z'});
+    else
+        Section_SubTab = removevars(Section_SubTab,{'dB_z','logf0_z','start','xEnd','logDur_z'});
+    end
+    RestOfTab = [RestOfTab; Section_SubTab(1:end-1,:)];
+end
+
+%add additional step size columns
+DistTab.InterVocInt = InterVocIntVec; %add inter voc interval
+DistTab.Dist2D = sqrt((DistTab.DistPitch).^2 + (DistTab.DistAmp).^2); %add 2d and 3d step sizes
+DistTab.Dist3D = sqrt((DistTab.DistPitch).^2 + (DistTab.DistAmp).^2 + (DistTab.DistDuration).^2);
+
+DistTab = [DistTab RestOfTab]; %plop tables together
+
+

@@ -1,0 +1,43 @@
+clear all
+clc
+
+%Ritwika VPS
+%script gets residuals of curr step size wrt prev step size
+
+BasePath = '/Users/ritwikavps/Desktop/GoogleDriveFiles/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/';%This is the base path to the google drive folder that may undergo change
+DestinationPath = strcat(BasePath,'Data/AnalysesResults/DataTabsForStats/R6_DataTablesForResponseAnalyses/CurrPrevStSi/CurrPrevStSize_RecLvlSummaryStats/');
+
+%The zscored data and the response data are in two different folders, so
+%instead of creating another folder with those two stitched together, I am
+%opting to sticth them in the script. 
+StSizPath = strcat(BasePath,'Data/AnalysesResults/DataTabsForStats/R6_DataTablesForResponseAnalyses/CurrPrevStSi');
+
+%dir files
+cd(StSizPath)
+StSizDir = dir('*s.csv');
+
+NewColNames = {'DistPitchRes','DistAmpRes','DistDurRes','IviRes','Dist2DRes','Dist3DRes'};
+statType = {'median','mean','std','percentile'};
+
+for i = 1:numel(StSizDir)
+
+    Opts = detectImportOptions(StSizDir(i).name);
+    Opts = setvartype(Opts, 'InfantID', 'string'); 
+    MyData = readtable(StSizDir(i).name,Opts);
+
+%     MyData.CurrInterVocInt = log(MyData.CurrInterVocInt);
+%     MyData.PrevInterVocInt = log(MyData.PrevInterVocInt);    
+
+    for j = 1:numel(NewColNames)
+        MyData.(NewColNames{j}) = GetRes(table2array(MyData(:,j)), table2array(MyData(:,j+8)));
+    end
+
+    MyData = MyData(:,[7 8 15:22]);
+
+    for j = 1:numel(statType)
+        OpTab = Get_WR_WOR_RecLvlStatsTab_Residuals(MyData,statType{j});
+        FileNameToSave = strcat(statType{j},'_',erase(StSizDir(i).name,'.csv'),'_Res.csv');
+        writetable(OpTab,strcat(DestinationPath,FileNameToSave))
+    end
+end
+
