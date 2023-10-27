@@ -4,7 +4,7 @@ This directory contains code that extracts, cleans up, processes, and analyses d
 
 The directory names are indexed as A1, A2, etc. to indicate the suggested order to follow. If all directories are not currently named with a prefix of the form 'A<number>', they will be in future updates.
 
-A1_LENADataProcessing contains code to extract LENA labels as well as acoustics from .wav and .its files (MATLAB, Bash, and Perl). Code in this directory also generates a metadata file as well as z-scored acoustics and time series data for the LENA data. For details, see README in the directory. The final processed data obtained from the pipeline in this directory can be found at https://osf.io/5xp7z/
+A1_LENADataProcessing contains code to extract LENA labels as well as acoustics from .wav and .its files (MATLAB, Bash, and R). Code in this directory also generates a metadata file as well as z-scored acoustics and time series data for the LENA data. For details, see README in the directory. The final processed data obtained from the pipeline in this directory can be found at https://osf.io/5xp7z/
 
 A2_HUMLabelDataCleanUp contains code to clean-up human listener annotated data (R, MATLAB, Bash, and Perl; for details, see README in the directory).
 
