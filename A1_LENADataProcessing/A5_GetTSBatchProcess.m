@@ -95,3 +95,8 @@ parfor i = 1:numel(N) %go through each subfolder; parallelising for faster proce
         end 
     end 
 end
+
+%-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+%A note: A couple files that are parts of day long recordings (with the suffix a, b, etc) don't find a wave file match, because the wave files
+%aren't necessarily split up into a, b, etc. Make sure to check for this and do those manually if necessary
+%-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
