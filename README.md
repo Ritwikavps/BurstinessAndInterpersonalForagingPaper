@@ -13,5 +13,7 @@ A3_HUMLabelDataProcessing contains code to extract human listener labels and aco
 A4_DataAnalysis) contains code to analyse data (acoustics and speaker labels). 
 
 ##
-Please make sure that all paths are correct before executing scripts
+Please make sure that all paths are correct before executing scripts. 
+
+To the best of the authors' knowledge, lines of code where paths might need changing or other important notes are present have been demarcated by '%-------------------------------------------' (in MATLAB) or '#########################################################' (in R) above and below the block of code/comments that require the reader's attention. 
 ##
