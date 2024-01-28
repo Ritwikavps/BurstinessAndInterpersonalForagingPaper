@@ -18,4 +18,4 @@ Please note that only files with the prefix A1, A2, etc. are executables, while 
 
 `A8_GettingZscoredData.m` computes z-scored values of amplitude, log mean pitch and log duration (the acoustic variables used in this study) and outputs relevant .csv files. 
 
-For more specific details, please read comments about paths and other notes in the files before executing them. 
+For more specific details, please read comments about paths and other notes in the files before executing them. To the best of the authors' knowledge, lines of code where paths might need changing or other important notes are present have been demarcated by '%-------------------------------------------' above and below the block of code/comments that require the reader's attention.
