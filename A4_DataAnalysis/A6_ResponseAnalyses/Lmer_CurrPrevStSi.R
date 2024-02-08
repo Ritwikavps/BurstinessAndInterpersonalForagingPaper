@@ -9,16 +9,16 @@ library(pracma)
 library(sjmisc)
 library(tidyverse)
 
-setwd('~/Desktop/GoogleDriveFiles/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/Data/AnalysesResults/DataTabsForStats/R6_DataTablesForResponseAnalyses/CurrPrevStSi')
+setwd('~/Desktop/GoogleDriveFiles/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/Data/ResultsTabs/ResponseAnalyses/ResponseEffect_w_CurrPrevStSizeControl/')
 source('~/Desktop/GoogleDriveFiles/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/CodeForGitHub/A4_DataAnalysis/A6_ResponseAnalyses/GetCurrPrevStSiLmerOp.R')
+source('~/Desktop/GoogleDriveFiles/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/CodeForGitHub/A4_DataAnalysis/A6_ResponseAnalyses/GetRespEffNoPrevStSiCtrlLmerOp.R')
+FilesToLoad = list.files(path = getwd(),pattern='.*s.csv')
 
-FilesToLoad = list.files(path = getwd(),pattern='LENA5min.*s.csv')
+OpTab = GetRespEffNoPrevStSiCtrlLmerOp(FilesToLoad,'ANRespToCHNSP')
 
-OpTab = GetCurrPrevStSiLmerOp(FilesToLoad,'ANRespToCHNSP')
+write.csv(OpTab, file = "RespEffNoCurrPrevStSizCtrl_LENA_ANRespToCHNSP_DurLogZ_VarsScaleLog_Dec142023.csv",row.names=FALSE)
 
-write.csv(OpTab, file = "CurrPrevStSizResp_LENA5min_ANRespToCHNSP_DurLogZ_RespAnalysesOnResid_VarsScaleLog_Oct192023.csv",row.names=FALSE)
+OpTab = GetRespEffNoPrevStSiCtrlLmerOp(FilesToLoad,'CHNSPRespToAN')
 
-OpTab = GetCurrPrevStSiLmerOp(FilesToLoad,'CHNSPRespToAN')
-
-write.csv(OpTab, file = "CurrPrevStSizResp_LENA5min_CHNSPRespToAN_DurLogZ_RespAnalysesOnResid_VarsScaleLog_Oct192023.csv",row.names=FALSE)
+write.csv(OpTab, file = "RespEffNoCurrPrevStSizCtrl_LENA_CHNSPRespToAN_DurLogZ_VarsScaleLog_Dec142023.csv",row.names=FALSE)
 
