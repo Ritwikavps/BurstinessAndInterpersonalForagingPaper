@@ -10,7 +10,7 @@ Please note that only files with the prefix A1, A2, etc. are executables, while 
 
 `A4_RunFolderRecorderpauses.sh` runs `recorderpauses.pl` on .its files to get info about incidences of the recorder being pause so that utterances from different sub-recordings aren't treated as temporally sequential.
 
-`A5_GetTSBatchProcess.m` extracts time series info from each .its file. Requires `getAcousticsTS.m`, `getIndividualAudioSegments.m`, and `getIndividualAudioSegments.m`. Note that a few files that are parts of day long recordings (with the suffix a, b, etc) don't find a wave file match, because the wave files aren't necessarily split up into a, b, etc. Make sure to check for this and do those manually if necessary.
+`A5_GetTSBatchProcess.m` extracts time series info from each .its file. Requires `getAcousticsTS.m` and `getIndividualAudioSegments.m`. Note that a few files that are parts of day long recordings (with the suffix a, b, etc) don't find a wave file match, because the wave files aren't necessarily split up into a, b, etc. Make sure to check for this and do those manually if necessary.
 
 `A6_IncorporatePauseTimesInTSAcoustics.m` incorporates recorder pause time info to the time series files so that different subrecordings can be identified.
 
