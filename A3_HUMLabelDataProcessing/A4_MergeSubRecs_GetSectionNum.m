@@ -4,7 +4,6 @@ clc
 %Ritwika VPS, July 2022; updated Dec 2023
 
 %This script joins together 5 min sections files that are from the same day-long recording, and identifies data with its own section number.
-%Further, this script also matches the human-listener labelled 5 min sections to the corresponding LENA labelles sections.
 %----------------------------------------------------------------------------------------------------------------------------------------------------------------------  
 %define paths, etc. CHANGE PATHS AND STRINGS IN FUNCTION CALLS AS NECESSARY
 
