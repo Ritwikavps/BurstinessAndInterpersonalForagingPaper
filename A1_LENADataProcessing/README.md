@@ -16,4 +16,6 @@ Please note that only files with the prefix A1, A2, etc. are executables, while 
 
 `A7_MergingSubrecsFromDeletions.m` merges sub-recordings resulting from deletions (which are separate files in the raw. its data) but are from the same recording day for an infant into a single file. Also identifies sub-recordings from deletions and incorporates that information (similar to A6). 
 
+The z-scoring of the combined LENA and human-listener data is done after extracting human-listener labelled data (the code for which is provided in `A3_HUMLabelDataProcessing`). 
+
 For more specific details, please read comments about paths and other notes in the files before executing them. 
