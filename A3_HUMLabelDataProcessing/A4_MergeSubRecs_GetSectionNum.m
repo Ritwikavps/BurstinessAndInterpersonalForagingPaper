@@ -4,6 +4,7 @@ clc
 %Ritwika VPS, July 2022; updated Dec 2023
 
 %This script joins together 5 min sections files that are from the same day-long recording, and identifies data with its own section number.
+%Further, this script also matches the human-listener labelled 5 min sections to the corresponding LENA labelles sections.
 %----------------------------------------------------------------------------------------------------------------------------------------------------------------------  
 %define paths, etc. CHANGE PATHS AND STRINGS IN FUNCTION CALLS AS NECESSARY
 
@@ -167,7 +168,8 @@ function [T_Op] = GetSubrecsStitchedTab(U_FnRoot_i,TSpath,FnRoot_wSubRecInfo,Cod
     %Now, we assign section numbers to utterances, based on section start and end times per the coding spreadsheet. First, subset coding spreadsheet info for the filename.
     CodingSubTab = CodingSheet(contains(CodingSheet.FileName,U_FnRoot_i),:);
     for j = 1:numel(CodingSubTab.StartTimeSS) %go through each pair of section start and end time
-        TempIndVec = IndexVec((TStab.xEnd >= CodingSubTab.StartTimeSS(j)) & (TStab.start <= CodingSubTab.EndTimeSS(j)));
+        TempIndVec = IndexVec((TStab.xEnd >= CodingSubTab.StartTimeSS(j)) & (TStab.start <= CodingSubTab.EndTimeSS(j))); %pick out all utterances that have any portion between the
+        %coding spreadsheet start and end time for a given section, and designate indices for all those utterances with the same section number (see next line)
         SectionNumVec(TempIndVec) = j;
     end
 
@@ -175,6 +177,6 @@ function [T_Op] = GetSubrecsStitchedTab(U_FnRoot_i,TSpath,FnRoot_wSubRecInfo,Cod
         error('There are utterances that do not belong to any section in the coding spreadsheet')
     end
 
-    TStab.SectionNum = SectionNumVec; %add to table
+    TStab.SectionNum = SectionNumVec; %add section number info to table
     T_Op = TStab; 
 end

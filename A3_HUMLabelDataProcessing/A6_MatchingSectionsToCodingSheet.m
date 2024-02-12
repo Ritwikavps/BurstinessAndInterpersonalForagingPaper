@@ -4,16 +4,7 @@ clc
 %Ritwika VPS
 %April 2022; updated Dec 2023
 
-%This script picks out corresponding 5 minute sections from LENA data for annotated 5 minute sections per the coding spreadsheet. The steps are as follows:
-    %- Match file name (of the human labelled file, subrecs merged) to file name in the coding spreadsheet, get all corresponding coding spreadsheet entries (even for subrecs. Note 
-        % that subrecs are parts of a whole day recording separated due to recorder pauses or deletions)
-    %- Get start and end times for each 5 min section (hereafter called section) per human listener annotation
-    %- Get start and end times for each section per coding spreadsheet
-    %- Pick out sections that HAVE been annotated and match sections between human labelled data and coding spreadsheet info
-    %- Pick out corresponding start and end times from LENA data (with the boundary straddling a voc being ok)
-    %- Read corresponding LENA tables and Get corresponding LENA data with section info etc.
-    %- Save new table 
-
+%This script picks out corresponding 5 minute sections from LENA data for annotated 5 minute sections per the coding spreadsheet. 
 %----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 %CHANGE PATHS ACCORDINGLY
 BasePath = '/Users/ritwikavps/Desktop/GoogleDriveFiles/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/Data/';
@@ -71,7 +62,8 @@ for i = 1:numel(HumFiles) %go through list of human listener labelled files
         end
     end
 
-    %error check to make sure that files with unannotated sections are files that have already been flagged in FilesWithUnannotatedSections.csv
+    %error check to make sure that files with unannotated sections are files that have already been flagged in FilesWithUnannotatedSections.csv. The displayed outputs from this check
+    % can be verified against the list of files with unannotated sections saved as a .csv file (FilesWithUnannotatedSections.csv).
     if sum(IsSectionAnnotated) < numel(IsSectionAnnotated)
         fprintf('File %s has %i unannotated sections wrt the coding spreadsheet \n',H_FnRoot,abs(sum(IsSectionAnnotated) - numel(IsSectionAnnotated)))
     end
