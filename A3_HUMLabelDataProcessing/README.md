@@ -2,7 +2,7 @@ This directory contains code written to extract and pre-process human-listener l
 
 Please note that only files with the prefix A1, A2, etc. are executables, while all other files are supporting functions. Please also note that the executable files need to be executed in the order of prefixes A1 to A6. Data required to execute all scripts in this directory as well as all shareable metadata files are provided in the associated OSF project (see main README for this repository for details).
 
-`A1_IdOverlapAndFilesWErrors.m` identifies overlaps in vocalisations based on onsets and offsets as determined by human listeners, and chops up overlapping vocalisations into overlapping and non-overlapping sub-vocalisations. Requires `DetectOverlap.m` and ` GetNonOverlapVocs.m`
+`A1_IdOverlapAndFilesWErrors.m` identifies overlaps in vocalisations based on onsets and offsets as determined by human listeners, and chops up overlapping vocalisations into overlapping and non-overlapping sub-vocalisations. Requires `DetectOverlap.m` and `GetNonOverlapVocs.m`
 
 ` A2_TSAcousticsBatchProcessHUMlabel.m` extracts time series info from each .its file. Requires `getAcousticsTS_HUMlabel.m` and `getIndividualAudioSegmentsHUMlabel.m`. Note that a few files that are parts of day long recordings (with the suffix a, b, etc) don't find a wave file match, because the wave files aren't necessarily split up into a, b, etc. Make sure to check for this and do those manually if necessary. Also note that the acoustics info is computed for vocalisations that have been chopped up into overlapping and non-overlapping sub-vocalisation wherever applicable. 
 
