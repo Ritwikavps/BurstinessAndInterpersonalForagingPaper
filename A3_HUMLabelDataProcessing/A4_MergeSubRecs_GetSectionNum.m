@@ -18,14 +18,14 @@ BasePath = '/Users/ritwikavps/Desktop/GoogleDriveFiles/research/IVFCRAndOtherWor
 destinationpath = strcat(BasePath,'A6_TSwSubrecsMerged/');
 
 %go to folder with Acoustics data (overlaps processed for acouistics and then vocs stitched back together + with annotation tags, and get relevant files.
-TSpath = strcat(BasePath,'A5_HlabelTS_OlpStitched/'); 
+TSpath = strcat(BasePath,'A5_HlabelTS_OlpRemoved/'); 
 cd(TSpath); 
-TSFiles = dir('*_TS_OlpStitched.csv');
+TSFiles = dir('*_TS_OlpRemoved.csv');
 
 %go through TS files and get file roots (with and without section numbers, a, b, etc.)
 for i = 1:numel(TSFiles)
-    FnRoot{i,1} = regexprep(strrep(TSFiles(i).name,'_TS_OlpStitched.csv',''),'[a-z]+','');
-    FnRoot_wSubRecInfo{i,1} = strrep(TSFiles(i).name,'_TS_OlpStitched.csv','');
+    FnRoot{i,1} = regexprep(strrep(TSFiles(i).name,'_TS_OlpRemoved.csv',''),'[a-z]+','');
+    FnRoot_wSubRecInfo{i,1} = strrep(TSFiles(i).name,'_TS_OlpRemoved.csv','');
 end
 %----------------------------------------------------------------------------------------------------------------------------------------------------------------------  
 
@@ -146,14 +146,14 @@ function [T_Op] = GetSubrecsStitchedTab(U_FnRoot_i,TSpath,FnRoot_wSubRecInfo,Cod
 
     if numel(Files_w_SameFnRoot) == 1 %if there is only one file that has the file name root in question, then we don't need to stitch anything together. However, we do need to add
         % info about the original file name (so that the final tables for cases with subrecs and without subrecs, have the same columns).
-        TStab = readtable(strcat(TSpath,Files_w_SameFnRoot{1},'_TS_OlpStitched.csv'),'Delimiter',',');
+        TStab = readtable(strcat(TSpath,Files_w_SameFnRoot{1},'_TS_OlpRemoved.csv'),'Delimiter',',');
         [OrigFnameVec{1:numel(TStab.speaker)}] = deal(Files_w_SameFnRoot{1}); %create cell array to store name of orig file
         TStab.FnameUnmerged = OrigFnameVec'; %add to table
     elseif numel(Files_w_SameFnRoot) > 1 %if there is more than one file has the same file name root (indicating more than one subrec), we need to sticth them together
-        TStab = readtable(strcat(TSpath,Files_w_SameFnRoot{1},'_TS_OlpStitched.csv'),'Delimiter',','); %read in the first subrec file
+        TStab = readtable(strcat(TSpath,Files_w_SameFnRoot{1},'_TS_OlpRemoved.csv'),'Delimiter',','); %read in the first subrec file
         [OrigFnameVec{1:numel(TStab.speaker)}] = deal(Files_w_SameFnRoot{1}); %create cell array with subrec file name
         for j = 2:numel(Files_w_SameFnRoot) %loop through the rest of the subrec files
-            TSTabToAdd = readtable(strcat(TSpath,Files_w_SameFnRoot{j},'_TS_OlpStitched.csv'),'Delimiter',','); %read in file
+            TSTabToAdd = readtable(strcat(TSpath,Files_w_SameFnRoot{j},'_TS_OlpRemoved.csv'),'Delimiter',','); %read in file
             TStab = [TStab; TSTabToAdd]; %add to table
             [OrigFnameVec{end+1:end+size(TSTabToAdd,1)}] = deal(Files_w_SameFnRoot{j}); %add subrec file name to cell array
         end
@@ -168,12 +168,15 @@ function [T_Op] = GetSubrecsStitchedTab(U_FnRoot_i,TSpath,FnRoot_wSubRecInfo,Cod
     %Now, we assign section numbers to utterances, based on section start and end times per the coding spreadsheet. First, subset coding spreadsheet info for the filename.
     CodingSubTab = CodingSheet(contains(CodingSheet.FileName,U_FnRoot_i),:);
     for j = 1:numel(CodingSubTab.StartTimeSS) %go through each pair of section start and end time
-        TempIndVec = IndexVec((TStab.xEnd >= CodingSubTab.StartTimeSS(j)) & (TStab.start <= CodingSubTab.EndTimeSS(j))); %pick out all utterances that have any portion between the
-        %coding spreadsheet start and end time for a given section, and designate indices for all those utterances with the same section number (see next line)
+        TempIndVec = IndexVec((TStab.xEnd >= (CodingSubTab.StartTimeSS(j)-3)) & (TStab.start <= (CodingSubTab.EndTimeSS(j)+3))); %pick out all utterances that have any portion between the
+        %coding spreadsheet start and end time for a given section, and designate indices for all those utterances with the same section number (see next line) Note that I am providing a 3 second 
+        % buffer to the coding spreadsheet end and start times to account for any sub-vocs that might fall outside of the bounds after being chopped up into overlapping and non-overlapping subvocs.
         SectionNumVec(TempIndVec) = j;
     end
 
     if ~isempty(SectionNumVec(SectionNumVec == 0))
+        %TStab(SectionNumVec == 0,:) %DEBUGGING BIT
+        %CodingSubTab
         error('There are utterances that do not belong to any section in the coding spreadsheet')
     end
 
