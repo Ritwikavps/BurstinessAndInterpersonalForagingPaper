@@ -3,7 +3,7 @@
 #Note that this is done in two steps because the CurrStepSi ~ PrevStSi analyses are carried out on all non-NaN steps, but the response analyses are only done on steps
 #associated with non-NA responses
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-GetCurrPrevStSiLmerOp_RecordingLevel <- function(FilesToLoad,RespToSpkr){
+GetRespEff_w_PrevStSiCtrl_RecordingLevel <- function(FilesToLoad,RespToSpkr){
   
   #This functions takes the list of files in the directory (FilesToLoad) as well as a string identifying the target speaker and responder (RespToSpkr; eg. ANRespToCHNSP), performs the two-step 
   #response effect analysis controlling for the effect of any intrinsic vocalisation pattern of the target speaker, and outputs the results of stastitical analyses as a tibble.
@@ -90,16 +90,84 @@ GetCurrPrevStSiLmerOp_RecordingLevel <- function(FilesToLoad,RespToSpkr){
 }
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#Fn 2: This function takes the data table that has the recording level stats outputed by the previous function (GetCurrPrevStSiLmerOp_RecordingLevel), and does an linear 
-#mixed effects model with Age and Age^2. That is, we get how the response effect changes with age
+#Fn 2: function to get response effect beta values WITHOUT the precdeing Current step size ~ Previous step size analysis, at the recording level.
+#Note that this is done in two steps because the CurrStepSi ~ PrevStSi analyses are carried out on all non-NaN steps, but the response analyses are only done on steps
+#associated with non-NA responses
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-GetLmerAgeEffOnRespBeta <- function(DataTab){
+GetRespEffNoPrevStSiCtrl_RecordingLevel <- function(FilesToLoad,RespToSpkr){
+  
+  #This functions takes the list of files in the directory (FilesToLoad) as well as a string identifying the target speaker and responder (RespToSpkr; eg. ANRespToCHNSP), performs the
+  #response effect analysis WITHOUT controlling for the effect of any intrinsic vocalisation pattern of the target speaker, and outputs the results of stastitical analyses as a tibble.
+  
+  #Note that in this version of the function, we do the analyses at the recording-day level
   
   #initialise vectors to iteratively store output in
-  StepType_Temp <- c(); RespWindow_Temp <- c() #Non-stats identifiers; eg. infant ID, infant age etc
+  StepType <- c(); InfAgeMnth <- c(); RespWindow_s <- c(); ID <- c() #Non-stats identifiers; eg. infant ID, infant age etc
+  ResponseEff = c(); ResponseP = c(); ResponseCI_2_5 = c(); ResponseCI_97_5 = c() #response effect stats results
+  
+  Ctr <- 0; #initialise counter variable
+  
+  for (i in FilesToLoad){ #go through file list
+    if (str_contains(i,RespToSpkr)){ #check if file name has the target string
+      
+      DataTab <- read_csv(i); attach(DataTab) #read table
+      DataTab <- filter(DataTab,!is.nan(Response)) #filter NaN responses
+      
+      RespWindowVal <- gsub('.*_','',gsub('s_IviOnly.csv','',i)) #get response window value
+      u_Age <- c(3,6,9,18); u_ID <- unique(DataTab$InfantID) #Get unique ages and infant IDs; note that we are only using ages 3, 6, 9, and 18 months
+      
+      for (i_age in u_Age){ #do analyses separately for different ages
+        for (i_ID in u_ID){ #and for different IDs, so we have effect sizes at the recording day level
+        
+          SubsetTab <- filter(DataTab, AgeMonths == i_age & InfantID == i_ID) #subset for age in months and child id
+          if (nrow(SubsetTab) > 1){ #continue if there are at least two non-empty rows
+            
+            ResponseVar <- as_factor(SubsetTab$Response) #get age, ID, and response
+            
+            for (j in 2){#1:6
+              
+              #print(j)
+              CurrVar <- log10(SubsetTab[,j] + (10^-10)) #log variables
+              
+              if(nrow(na.omit(CurrVar)) > 1 & nlevels(ResponseVar) > 1){ #proceed only if there is more than one row (after removing NAN) in CurrVar 
+                #AND if there are both Yes (1) and No (0) responses
+              
+                Ctr <- Ctr + 1
+                
+                LmMdl_Resp <- lm(scale(CurrVar) ~ ResponseVar)  #run response effect on residuals
+                RespSummary <- summary(LmMdl_Resp); RespCIs <- confint(LmMdl_Resp)
+                
+                StepType[Ctr] <- gsub('Curr','',colnames(SubsetTab)[j]) #save results
+                RespWindow_s[Ctr] <- RespWindowVal; InfAgeMnth[Ctr] <- i_age; ID[Ctr] <- i_ID
+                
+                ResponseEff[Ctr] <- RespSummary$coefficients[2,1] 
+                ResponseP[Ctr] <- RespSummary$coefficients[2,4]
+                ResponseCI_2_5[Ctr] <- RespCIs[2,1]
+                ResponseCI_97_5[Ctr] <- RespCIs[2,2]
+              }
+            }
+          }
+        } 
+      }
+      detach(DataTab)
+    }
+  }
+  
+  OpTab <- tibble(RespWindow_s,StepType, InfAgeMnth, ID,
+                  ResponseEff,ResponseP,ResponseCI_2_5,ResponseCI_97_5)
+  return(OpTab)
+}
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#Fn 3: This function takes the data table that has the recording level stats outputed by the previous function (GetRespEff_w_PrevStSiCtrl), and does an linear 
+#mixed effects model with Age and Age^2. That is, we get how the response effect changes with age
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+GetLmerAgeEffOnRespBeta <- function(DataTab,PrevStCtrlFlag){
+  
+  #initialise vectors to iteratively store output in
+  StepType_Temp <- c(); RespWindow_Temp <- c(); PrevStCtrl <- c() #Non-stats identifiers; eg. infant ID, infant age etc
   Age1Eff <- c(); Age1P <- c(); Age1CI_2_5 <- c(); Age1CI_97_5 <- c() #age (linear) results
   Age2Eff <- c(); Age2P <- c(); Age2CI_2_5 <- c(); Age2CI_97_5 <- c() #age^2 results
-  InterceptVal <- c(); InterceptCI_2_5 <- c(); InterceptCI_97_5 <- c();
+  InterceptVal <- c(); InterceptCI_2_5 <- c(); InterceptCI_97_5 <- c()
   
   Ctr <- 0 #intialise counter variable
   
@@ -120,7 +188,7 @@ GetLmerAgeEffOnRespBeta <- function(DataTab){
       LmerSummary <- summary(LmerMdl); LmerCIs <- confint(LmerMdl) #get stats results
       
       #store results
-      StepType_Temp[Ctr] <- i_step; RespWindow_Temp[Ctr] <- i_respwin
+      StepType_Temp[Ctr] <- i_step; RespWindow_Temp[Ctr] <- i_respwin; PrevStCtrl[Ctr] <- PrevStCtrlFlag
       
       InterceptVal[Ctr] <- LmerSummary$coefficients[1,1]
       InterceptCI_2_5[Ctr] <- LmerCIs[3,1]
@@ -140,7 +208,7 @@ GetLmerAgeEffOnRespBeta <- function(DataTab){
   detach(DataTab)
   
   RespWindow_s <- RespWindow_Temp; StepType <- StepType_Temp #rename vars
-  OpTab <- tibble(StepType,RespWindow_s,
+  OpTab <- tibble(StepType,RespWindow_s,PrevStCtrl,
                   InterceptVal,InterceptCI_2_5,InterceptCI_97_5,
                   Age1Eff,Age1P,Age1CI_2_5,Age1CI_97_5,
                   Age2Eff,Age2P,Age2CI_2_5,Age2CI_97_5)
@@ -162,13 +230,19 @@ WriteOpToFile_RecLvlRespBeta_AgeEffOnRespBeta <- function(WorkingDir,FilePattern
   
   for (RespType in c('ANRespToCHNSP','CHNSPRespToAN')){ #go through the response-to-speaker types
   
-    RecLvlStats_Fname <- strcat(DataType,strcat('_',strcat(RespType,'_RespEff_W_CurrPrevStSizCtrl_DurLogZ_VarsScaleLog_RecDayLvl_IviOnly.csv'))) #get file names to save
-    AgeEff_Fname <- strcat(DataType,strcat('_',strcat(RespType,'_AgeEffOnRespEff_W_CurrPrevStSizCtrl_RawPolyAge_IviOnly.csv')))
+    RecLvlStats_wCtrl_Fname <- strcat(DataType,strcat('_',strcat(RespType,'_RespEff_W_CurrPrevStSizCtrl_VarsScaleLog_RecDayLvl_IviOnly.csv'))) #get file names to save
+    RecLvlStats_NoCtrl_Fname <- strcat(DataType,strcat('_',strcat(RespType,'_RespEff_NoPrevStSizCtrl_VarsScaleLog_RecDayLvl_IviOnly.csv'))) #get file names to save
+    AgeEff_Fname <- strcat(DataType,strcat('_',strcat(RespType,'_AgeEffOnRespEff_wAndWo_CurrPrevStSizCtrl_RawPolyAge_IviOnly.csv')))
     
-    RecLvlRespStats_wStSiCtrl <- GetCurrPrevStSiLmerOp_RecordingLevel(FilesToLoad,RespType) #Get rec level response effect and prev step size effect stats (these are betas)
-    write.csv(RecLvlRespStats_wStSiCtrl, file = RecLvlStats_Fname,row.names=FALSE) #write file
+    RecLvlRespStats_wStSiCtrl <- GetRespEff_w_PrevStSiCtrl_RecordingLevel(FilesToLoad,RespType) #Get rec level response effect and prev step size effect stats (these are betas)
+    write.csv(RecLvlRespStats_wStSiCtrl, file = RecLvlStats_wCtrl_Fname,row.names=FALSE) #write file
     
-    AgeEffForRespBeta = GetLmerAgeEffOnRespBeta(RecLvlRespStats_wStSiCtrl) #get age effects on response betas (these are B's because we are not doing scale(age))
+    RecLvlRespStats_NoStSiCtrl <- GetRespEffNoPrevStSiCtrl_RecordingLevel(FilesToLoad,RespType) #Get rec level response effect w/o prev step size effect (these are betas)
+    write.csv(RecLvlRespStats_NoStSiCtrl, file = RecLvlStats_NoCtrl_Fname,row.names=FALSE) #write file
+    
+    AgeEffForRespBeta_w_PrevStSiCtrl = GetLmerAgeEffOnRespBeta(RecLvlRespStats_wStSiCtrl,PrevStCtrlFlag = 'Yes') #get age effects on response betas (these are B's because we are not doing scale(age))
+    AgeEffForRespBeta_No_PrevStSiCtrl = GetLmerAgeEffOnRespBeta(RecLvlRespStats_NoStSiCtrl,PrevStCtrlFlag = 'No') #get age effects on response betas (these are B's because we are not doing scale(age))
+    AgeEffForRespBeta = bind_rows(AgeEffForRespBeta_No_PrevStSiCtrl,AgeEffForRespBeta_w_PrevStSiCtrl)
     write.csv(AgeEffForRespBeta, file = AgeEff_Fname,row.names=FALSE) #write file
   }
 }
