@@ -1,10 +1,12 @@
 This directory contains code written to clean up human-listener labelled data used in this study. 
 
-Please note that only files with the prefix A1, A2, etc. are executables, while all other files are supporting functions. Please also note that the executable files need to be executed in the order of prefixes A1 to A4. Finally, there are two optional executable files (with the additional prefix `Optl`) that don’t need to be executed. Data required to execute the scripts in this directory contain potentially identifying information and as such, access to this data is restricted, and the provided code is intended to orient the reader. 
+Please note that only files with the prefix A1, A2, etc. are executables, while all other files are supporting functions. Please also note that the executable files need to be executed in the order of prefixes A1 to A4. Finally, there are two optional executable files (with the additional prefix `Optl`) that don’t need to be executed. 
 
 The first of these, `A2Optl_Eaf0225_000602QuickFix.R`, was intended to quickly edit systematic textual errors in 0225_000602.eaf. This script was written during the first round of the .eaf file clean-up process, and these files have gone through multiple rounds of clean-up (both using the pipeline provided here, as well as with a trained graduate student researcher manually cleaning up flagged issues). As such, this optional script is now obsolete. 
 
 The second optional script, ` A2Optl_GetUniqueTierNames.m` simply extracts the set of unique tier names cumulatively present the set of human-listener annotation files (.eaf files). This is in order to identify incorrect tier names (eg. `Adult Utt Dir` instead of `Adult Utterance Direction`). The output of this script is simply the list of unique tier names displayed in the console, and only serve easy visualisation. 
+
+Data required to execute the scripts in this directory contain potentially identifying information and as such, access to this data is restricted, and the provided code is intended to orient the reader. 
 
 `A1_CopyEafFilesToFolder.m` copies .eaf files for each infant to a single common directory. Also creates .csv files with filename and infant ID info.
 
