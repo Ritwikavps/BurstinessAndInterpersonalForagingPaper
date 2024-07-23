@@ -15,13 +15,16 @@ clc
 BasePath = '/Users/ritwikavps/Desktop/GoogleDriveFiles/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/Data/HUMLabelData/';%This is the base path to the google drive folder that may undergo change
 %read coding spreadsheet info file
 CodingSpreadsheet = readtable(strcat(BasePath,'A1_HUMLabelData_CleanupPipeline/SummaryCsvAndTxtFiles/FNSTETSimplified.csv'));
-CleanUpStatus = 'PostCleanUp'; %CHANGE TO 'PostCleanUp' ACCORDINGLY
+CleanUpStatus = 'PostCleanUp-CodeAndJM'; %CHANGE TO 'PostCleanUp-CodeOnly', 'PreCleanUp', or 'PostCleanUp-CodeAndJM' ACCORDINGLY
 if strcmpi(CleanUpStatus,'PreCleanUp')
     EafDetailsFromR_path = strcat(BasePath,'A1_HUMLabelData_CleanupPipeline/A2_ParsedEafFilesFromR_PreCleanUp/'); 
     CsvSuffixForCodingSpreadsheetBds = '.csv';
-elseif strcmpi(CleanUpStatus,'PostCleanUp')
+elseif strcmpi(CleanUpStatus,'PostCleanUp-CodeOnly')
     EafDetailsFromR_path = strcat(BasePath,'A1_HUMLabelData_CleanupPipeline/A4_ParsedEafFilesFromR_PostCleanUp/'); 
     CsvSuffixForCodingSpreadsheetBds = '_Edited.csv';
+elseif strcmpi(CleanUpStatus,'PostCleanUp-CodeAndJM')
+    EafDetailsFromR_path = strcat(BasePath,'A2_HUMLabelData_PostCleanUp/A2_HlabelCsvFiles/');
+    CsvSuffixForCodingSpreadsheetBds = '_EditedMay2023.csv';
 end
 %----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -59,6 +62,8 @@ for i = 1:numel(FilesFromR_dir)
     T_TierMismatchOrIncorrectAnnot = GetMismatchedTierAndIncorrectAnnotations(TierInfoTable,T_TierMismatchOrIncorrectAnnot);
 
     %%The second layer of finding misisng annottaions: check if all annotations in adult utt dir tier are in orthographic tier and vice-versa--------------------------
+    %Note that we also look for cases where an annotation is in adult utt dir tier but not in music tier or vice-versa; in adult utt dir tier but not in background overlap 
+    % tier or vice-versa
     T_AnnotInOrthoTierButNotAdultUttDirTier = GetAnnotInOrthoButNotInUttDir(TierInfoTable,FilesFromR_dir(i).name,T_AnnotInOrthoTierButNotAdultUttDirTier);
 
     for j = 1:numel(TierInfoTable.StartTimeVal)

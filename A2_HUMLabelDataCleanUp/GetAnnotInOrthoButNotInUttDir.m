@@ -2,7 +2,7 @@ function T_AnnotInOrthoTierButNotAdultUttDirTier_out = GetAnnotInOrthoButNotInUt
 
     %Ritwika VPS, JUne 2022; Modified Nov 2023
     
-    %function to check whether any annotations that are in the adult orthographic transcription tier are missing from the utternace direction tier
+    %function to check whether any annotations that are in the adult orthographic transcription tier are missing from the utternace direction tier or vice-versa
     %In addition, this function also identifies annotations that are in the music and background overlap tiers but missing from the utterance
     %direction tier or vice versa. Thsi was added after the function was originally written, so I haven't bothered changing the function name
     
@@ -51,7 +51,7 @@ function T_AnnotInOrthoTierButNotAdultUttDirTier_out = GetAnnotInOrthoButNotInUt
             %now go through tier 2 table start and end times and compare to adult utterance direction start and end time
             for k = 1:numel(Tier2Tab.StartTimeRef)
                 if (~ismember(Tier2Tab.StartTimeVal(k),AdultUttDirTab.StartTimeVal)) ...
-                        || (~ismember(Tier2Tab.EndTimeVal(k),AdultUttDirTab.EndTimeVal)) %if either start or end time of any orthographic annotation
+                        || (~ismember(Tier2Tab.EndTimeVal(k),AdultUttDirTab.EndTimeVal)) %if either start or end time of any Tier2 annotation
                     %is missing in the utterance direction tier, add to the table
                     %keeping track of this
                     OpTab = [OpTab; Tier2Tab(k,:)];
@@ -63,7 +63,7 @@ function T_AnnotInOrthoTierButNotAdultUttDirTier_out = GetAnnotInOrthoButNotInUt
             for k = 1:numel(AdultUttDirTab.StartTimeRef)
                 if (~ismember(AdultUttDirTab.StartTimeVal(k),Tier2Tab.StartTimeVal)) ...
                         || (~ismember(AdultUttDirTab.EndTimeVal(k),Tier2Tab.EndTimeVal)) %if either start or end time of any utterance dir annotation
-                    %is missing in the music tier, add to the table
+                    %is missing in Tier2, add to the table
                     %keeping track of this
                     OpTab = [OpTab; AdultUttDirTab(k,:)];
                 end 
