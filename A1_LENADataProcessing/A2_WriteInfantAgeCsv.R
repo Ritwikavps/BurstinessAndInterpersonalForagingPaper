@@ -1,43 +1,27 @@
 #Ritwika VPS, Oct 2023
-#code to parse .its files and save infant age details in a .csv file (this is a far less clunky implementation of code of the same 
-#concept that uses a combo of bash, perl, and MATLAB
+#This script parses .its files and saves infant age details in a .csv file (this is a far less clunky implementation of code of the sameconcept that uses a combo of 
+#Bash, Perl, and MATLAB)
+
+library(pracma); library(sjmisc); library(tidyverse) #Load required libraries
 
 ################################################################################################################################################################################################################################
-#set working directory; CHANGE ACCORDINGLY
-setwd('~/Desktop/GoogleDriveFiles/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/Data/LENAData/A1_ItsFiles/')
-################################################################################################################################################################################################################################
-
-#load required librarues
-library(pracma) #lots fo basic functions
-library(stringr)
-library(sjmisc)
-library(tidyverse)
-
-################################################################################################################################################################################################################################
-#read metadata file; CHNAGE PATH ACCORDINGLY
-ItsFileTab = read_csv('~/Desktop/GoogleDriveFiles/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/Data/MetadataFiles/ItsFileDetailsShareable.csv')
-
-#source all user-defined functions; CHNAGE PATHA CCORDINGLY
+#CHANGE PATHS ACCORDINGLY
+#Source all user-defined functions
 source('~/Desktop/GoogleDriveFiles/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/CodeForGitHub/A1_LENADataProcessing/ItsParsingFnsForInfantAge.R')
+BasePath <- '~/Desktop/GoogleDriveFiles/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/Data/' 
+setwd(str_c(BasePath,'LENAData/A1_ItsFiles/')) #Set working directory
+ItsFileTab <- read_csv(str_c(BasePath,'MetadataFiles/ItsFileDetailsShareable.csv')) #Read metadata file
+OpFileName <- str_c(BasePath,'MetadataFiles/MetadataInfAgeAndID1.csv') #Get output file name
 ################################################################################################################################################################################################################################
 
-CurrPath = getwd() #get current path
-aa <- dir(CurrPath, pattern = ".its") #dir .eaf files
+CurrPath <- getwd() #Get current path
+ItsDir <- dir(CurrPath, pattern = ".its") #dir .eaf files
 
-FNRoot = c()
-InfantAge = c()
-InfantID = c()
+FNRoot <- c(); InfantAge <- c(); InfantID <- c() #Initialise vectors to iteratively populate
 
-#go through files dir-d
-for (i in 1:numel(aa)){ #
-  
-  #inputs
-  ItsFilename = aa[i] #set ItsFilename variable as .its file name 
-  
-  FNRoot[i] = gsub('.its','',ItsFilename)
-  InfantAge[i] = GetInfAge(ItsFilename)
-  InfantID[i] = GetInfantID(ItsFileTab,ItsFilename)
+for (i in 1:numel(ItsDir)) { #Go through files dir-d
+  ItsFilename <- ItsDir[i] #Set ItsFilename variable as .its file name 
+  FNRoot[i] <- gsub('.its','',ItsFilename); InfantAge[i] <- GetInfAge(ItsFilename); InfantID[i] <- GetInfantID(ItsFileTab,ItsFilename)
 }
 
-AgeTbl = tibble(FNRoot,InfantID,InfantAge)
-write_csv(AgeTbl,'~/Desktop/GoogleDriveFiles/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/Data/MetadataFiles/MetadataInfAgeAndID.csv')
+AgeTbl <- tibble(FNRoot,InfantID,InfantAge); write_csv(AgeTbl,OpFileName) #Make and write output table
