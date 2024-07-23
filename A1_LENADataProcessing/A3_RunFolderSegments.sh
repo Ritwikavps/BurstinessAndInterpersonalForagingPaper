@@ -3,7 +3,8 @@
 # Ritwika VPS, Feb 2021 (modified from code by Gina M. Pretzer/Anne Warlaumont; originally available on https://github.com/HomeBankCode/lena-its-tools, see repo for additional documentation)
 
 #This tool allows you to run the "segments.pl" tool on multiple .its files.
-#The output information for each .its file is written into an individual .csv file which will be stored in the same folder as the .its file. I recommend moving these .csv files to their own folder 
+#The output information for each .its file is written into an individual .csv file which will be stored in the same folder as the .its file. After executing this file, move these output .csv files 
+#to their own directory, A2_Segments
 #
 # Takes the following command line arguments:
 # The path and file for this script 
@@ -20,9 +21,9 @@
 # 8.) Navigate to directory where "RunFolder_segments.sh" is located
 # 9.) Run the file (sh RunFolder_segments.sh )
 
-cd ~/Google\ Drive/My\ Drive/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/Data/LENAData/A1_ItsFiles
+cd ~/Desktop/GoogleDriveFiles/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/Data/LENAData/A1_ItsFiles
 for itsfile in *.its
 	do outfile=`echo $itsfile | sed 's/\.its/_Segments\.csv/g'`  
-	perl ~/Google\ Drive/My\ Drive/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/CodeForGitHub/A1_LENADataProcessing/segments.pl $itsfile $outfile 
+	perl ~/Desktop/GoogleDriveFiles/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/CodeForGitHub/A1_LENADataProcessing/segments.pl $itsfile $outfile 
 done
 

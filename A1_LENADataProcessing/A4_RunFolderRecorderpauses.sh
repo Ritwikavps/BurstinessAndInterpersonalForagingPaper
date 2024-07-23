@@ -3,7 +3,8 @@
 # Ritwika VPS, Feb 2021
 #
 # This tool allows you to run the "recorderpauses.pl" tool on multiple .its files.
-# The output information for each .its file is written into an individual .txt file, saved in the same folder as the .its file. I recommend moving these .txt files to a new folder
+# The output information for each .its file is written into an individual .txt file, saved in the same folder as the .its file. After executing this file, move these output .csv files 
+#to their own directory, A3_PauseTimes
 #
 # Takes the following command line arguments:
 # The path and file for this script 
@@ -20,9 +21,9 @@
 # 9.) Navigate to directory where "RunFolder_readits.sh" is located
 # 10.) Run this file (sh RunFolder_readits.sh )
 
-cd ~/Google\ Drive/My\ Drive/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/Data/LENAData/A1_ItsFiles  
+cd ~/Desktop/GoogleDriveFiles/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/Data/LENAData/A1_ItsFiles  
 for itsfile in *.its
 	do outfile=`echo $itsfile | sed 's/\.its/_PauseTimes\.txt/g'`;
-	perl ~/Google\ Drive/My\ Drive/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/CodeForGitHub/A1_LENADataProcessing/recorderpauses.pl $itsfile $outfile
+	perl ~/Desktop/GoogleDriveFiles/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/CodeForGitHub/A1_LENADataProcessing/recorderpauses.pl $itsfile $outfile
 	done
 	

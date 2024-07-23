@@ -9,30 +9,26 @@ clc
     %-to delete all the small wave files from getIndividualAudioSegments.m after each iteration so memory isn't cluttered        
 
 %--------------------------------------------------------------------------------------------------------------------------------------------------------
-%first, we need to go into each folder in LENAExports and then run each wave file
-cd /Users/ritwikavps/Library/CloudStorage/Box-Box/'IVFCR Study'/LENAExports_Renamed/ %Insert your path; PLEASE CHANGE ACCORDINGLY
+%CHANGE PATH ACCORDINGLY
+cd /Users/ritwikavps/Library/CloudStorage/Box-Box/'IVFCR Study'/LENAExports_Renamed/ %Path to .wav files
+BasePath = '/Users/ritwikavps/Desktop/GoogleDriveFiles/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/'; %Basepath to the project
 %--------------------------------------------------------------------------------------------------------------------------------------------------------
 
-S = dir('*'); %get all files and folders
-N = setdiff({S([S.isdir]).name},{'.','..'}); %get all folders ONLY except the . and .. folders
+S = dir('*'); %Get all files and folders
+N = setdiff({S([S.isdir]).name},{'.','..'}); %Get all folders ONLY except the . and .. folders
 
-%numfiles = 0;
-
-parfor i = 1:numel(N) %go through each subfolder; parallelising for faster processing
-    
+parfor i = 1:numel(N) %Go through each subfolder; parallelising for faster processing
     %--------------------------------------------------------------------------------------------------------------------------------------------------------
-    desiredpath = strcat('/Users/ritwikavps/Library/CloudStorage/Box-Box/IVFCR Study/LENAExports_Renamed/',N{i}); %CHANGE PATH ACCORDINGLY
+    %CHANGE PATH ACCORDINGLY
+    desiredpath = strcat('/Users/ritwikavps/Library/CloudStorage/Box-Box/IVFCR Study/LENAExports_Renamed/',N{i}); %Path to each infant's folder
     %--------------------------------------------------------------------------------------------------------------------------------------------------------
-    cd(desiredpath)
+    cd(desiredpath) 
+    newdir = dir('*.wav'); %Get all .wav files in the directory
     
-    newdir = dir('*.wav');
-    
-    for j = 1:numel(newdir) %go through each wavefile
+    for j = 1:numel(newdir) %Go through each wavefile
         
-        %numfiles = numfiles + 1
-        
-        %get the root of the filename - this is the bit that all associated files will have in common
-        NameRoot = strrep(newdir(j).name,'.wav','');  %replace .wav with blank so we can find same root file
+        %Get the root of the filename - this is the bit that all associated files will have in common
+        NameRoot = strrep(newdir(j).name,'.wav','');  %Replace .wav with '' so we can find same root file
         
         %Inputs for this:
             %SegmentsFile: the name of the segments csv file corresponding
@@ -44,19 +40,19 @@ parfor i = 1:numel(N) %go through each subfolder; parallelising for faster proce
      
         %-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
         %CHNAGE PATH TO SAVE ACCORDINGLY
-        SegmentsFile = strcat('/Users/ritwikavps/Desktop/GoogleDriveFiles/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/Data/LENAData/A2_Segments/',NameRoot,'_Segments.csv'); %to use in downstream function
-        TSfile = strcat('/Users/ritwikavps/Desktop/GoogleDriveFiles/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/Data/LENAData/A4_TimeSeries/',NameRoot,'_TS.csv'); %to check if TS file exists
+        SegmentsFile = strcat(BasePath,'Data/LENAData/A2_Segments/',NameRoot,'_Segments.csv'); %To use in downstream function
+        TSfile = strcat(BasePath,'Data/LENAData/A4_TimeSeries/',NameRoot,'_TS.csv'); %To check if TS file exists
         %-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-        if (isfile(SegmentsFile) == 1) && (isfile(TSfile) == 0)%continue ONLY if the corresponding segments file exists
+        if (isfile(SegmentsFile) == 1) && (isfile(TSfile) == 0)%Continue ONLY if the corresponding segments file exists AND if the TSfile does not exist (to avoid repeating computations)
            
             [i j] 
 
-            %AND if the TSfile does not existm because we don't want to
-            %repeat compiutations
             bigWavFile = strcat(desiredpath,'/',newdir(j).name);
             %--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-            OutFileBase = strcat('/Users/ritwikavps/Downloads/TempWavFiles/',NameRoot); %CHANGE PATH ACCORDINGLY; also note that this is a directory I explicitly created to dyump the temp files into, so you'll have to do something similar
+            %CHANGE PATH ACCORDINGLY;
+            %Note that this is a directory I explicitly created to dyump the temp files into, so you'll have to do something similar
+            OutFileBase = strcat('/Users/ritwikavps/Downloads/TempWavFiles/',NameRoot); 
             %--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
             buffer = 0; %0 is the buffer value we want
             speakers = {'CHNSP','CHNNSP','FAN','MAN'}; %These are the speaker types we want
@@ -72,31 +68,22 @@ parfor i = 1:numel(N) %go through each subfolder; parallelising for faster proce
             %-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
             %CHANGE PATHS ACCODINGLY
             wavFileDir = '/Users/ritwikavps/Downloads/TempWavFiles/';
-            outFile = strcat('/Users/ritwikavps/Desktop/GoogleDriveFiles/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/Data/LENAData/TempTS/',NameRoot,'_TS.csv'); 
-            %note that TempTS is a directory I created to temporarily store the time series file before moving to the final time series folder
+            outFile = strcat(BasePath,'Data/LENAData/TempTS/',NameRoot,'_TS.csv'); 
+            %Note that TempTS is a directory I created to temporarily store the time series file before moving to the final time series folder
             %-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
             speakers = {'CHNSP','CHNNSP','FAN','MAN'};
             getAcousticsTS(SegmentsFile,wavFileDir,wavfilebase,outFile,speakers);
 
             %-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
             %CHANGE PATH ACCORDINGLY
-            movefile(outFile,'/Users/ritwikavps/Desktop/GoogleDriveFiles/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/Data/LENAData/A4_TimeSeries');
-            %-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-            %-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-            %delete all the small wavefiles created; CHANGE PATH ACCORDINGLY
-            which_dir = '/Users/ritwikavps/Downloads/TempWavFiles';
+            movefile(outFile,strcat(BasePath,'Data/LENAData/A4_TimeSeries'));
+            which_dir = '/Users/ritwikavps/Downloads/TempWavFiles'; %delete all the small wavefiles created; 
             %-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
             filestr = strcat(which_dir,'/',NameRoot,'*.wav');
-            dinfo = dir(filestr); %get all contents for the specific file name root
-            dinfo([dinfo.isdir]) = [];   %skip directories
-            filenames = fullfile(which_dir, {dinfo.name}); %get filenames
-            delete( filenames{:} ) %delete all
+            dinfo = dir(filestr); %Get all contents for the specific file name root
+            dinfo([dinfo.isdir]) = [];   %Skip directories
+            filenames = fullfile(which_dir, {dinfo.name}); %Get filenames
+            delete( filenames{:} ) %Delete all
         end 
     end 
 end
-
-%-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-%A note: A couple files that are parts of day long recordings (with the suffix a, b, etc) don't find a wave file match, because the wave files
-%aren't necessarily split up into a, b, etc. Make sure to check for this and do those manually if necessary
-%-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
