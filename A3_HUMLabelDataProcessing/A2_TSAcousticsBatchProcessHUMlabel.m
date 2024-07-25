@@ -25,7 +25,7 @@ wavFileDir = '/Users/ritwikavps/Downloads/TempWavFiles/'; %directory to store te
 %Now, we go through the annotated eaf files one by one, match to corresponding wav files, and get acoustics. 
 for i = 1:numel(S) 
     
-    %i
+    i
     
     %----------------------------------------------------------------------------------------------------------------------------------------------------------------------
     fileroot = regexprep(S(i).name,'_OlpProc.*.csv',''); %get fileroot by replacing '_OlpProc.csv'; CHANGE STRINGS INSIDE FUNCTION CALL AS NECESSARY.

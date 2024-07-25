@@ -4,7 +4,6 @@ clc
 %Ritwika VPS, July 2022; updated Dec 2023
 
 %This script joins together 5 min sections files that are from the same day-long recording, and identifies data with its own section number.
-%Further, this script also matches the human-listener labelled 5 min sections to the corresponding LENA labelles sections.
 %----------------------------------------------------------------------------------------------------------------------------------------------------------------------  
 %define paths, etc. CHANGE PATHS AND STRINGS IN FUNCTION CALLS AS NECESSARY
 
@@ -14,11 +13,11 @@ clc
 cd '/Users/ritwikavps/Desktop/GoogleDriveFiles/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/Data/HUMLabelData/A1_HUMLabelData_CleanupPipeline/SummaryCsvAndTxtFiles/'
 CodingSheet = readtable('FNSTETSimplified.csv');
 
-BasePath = '/Users/ritwikavps/Desktop/GoogleDriveFiles/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/Data/HUMLabelData/A2_HUMLabelData_PostCleanUp/';
-destinationpath = strcat(BasePath,'A6_TSwSubrecsMerged/');
+BasePath = '/Users/ritwikavps/Desktop/GoogleDriveFiles/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/Data/';
+destinationpath = strcat(BasePath,'HUMLabelData/A2_HUMLabelData_PostCleanUp/A6_TSwSubrecsMerged/');
 
 %go to folder with Acoustics data (overlaps processed for acouistics and then vocs stitched back together + with annotation tags, and get relevant files.
-TSpath = strcat(BasePath,'A5_HlabelTS_OlpRemoved/'); 
+TSpath = strcat(BasePath,'HUMLabelData/A2_HUMLabelData_PostCleanUp/A5_HlabelTS_OlpRemoved/'); 
 cd(TSpath); 
 TSFiles = dir('*_TS_OlpRemoved.csv');
 
@@ -48,8 +47,11 @@ for i = 1:numel(U_CodingSheetFname) %get number of sections intended to be annot
     NumSectionsInCodingSheet(i,1) = numel(CodingSheet.FileName(contains(CodingSheet.FileName,U_CodingSheetFname{i})));
 end
 
-if isequal(U_CodingSheetFname,U_FnRoot) %as it turns out, the list of unique file names (without subrec suffixes) from annotated files and from rhe coding spreasheet, are the same.
-    %FnameIndex = 1:numel(U_CodingSheetFname);
+if strcmp(setdiff(U_CodingSheetFname,U_FnRoot),'0776_000613') %As it turns out, the list of unique file names (without subrec suffixes) from annotated files and from rhe coding 
+    % spreasheet, are the same except for U_FnRoot missing '0776_000613'.'0776_000613' was annotated wrt an incorrect audio file, and we exclude this from further analyses. So, this file 
+    % is not going to be present in U_FnRoot. However, thsi is going to be the only file name that is not present in U_FnRoot, so setdiff should catch that and flag any other errors. 
+    %FnameIndex = 1:numel(U_CodingSheetFname)
+    NumSectionsInCodingSheet = NumSectionsInCodingSheet(~contains(U_CodingSheetFname,'0776_000613')); %remove entry corresponding to excluded file
     NumAnnotSecDiff = NumSectionsInCodingSheet - NumSectionsInHum; %the assumption is that the number of annotated sections shouldn't be greater than the number of sections
     %intended for annotation per the coding sheet. So, this difference should always be positive or zero
     Fname_UnannotSections = U_FnRoot(NumAnnotSecDiff ~= 0); %pick out file names, number of actual annotated sections, and number of sections intended to be annotated
@@ -64,11 +66,11 @@ else
 end
 
 T_Annotdetails = table(Fname_UnannotSections,NumSectionsToAnnot_CodingSheet,NumSectionsAnnotated); %get this info into a table and write table
-writetable(T_Annotdetails,strcat(BasePath,'FilesWithUnannotatedSections.csv'));
+writetable(T_Annotdetails,strcat(BasePath,'MetadataFiles/FilesWithUnannotatedSections.csv'));
 
 %get info about files where 5 min sections are less than 30 minutes apart
 TimeBnSections_Flag = 0; %initialise flag counter
-if ~isequal(FnRoot_wSubRecInfo,unique(CodingSheet.FileName))
+if ~strcmp(setdiff(unique(CodingSheet.FileName),FnRoot_wSubRecInfo),'0776_000613') %accounting for '0776_000613' being excluded
     error('The set of unique filenames (with subrec info) per coding spreadsheet and from list of files dir-d are not the same.')
 end
 for i = 1:numel(FnRoot_wSubRecInfo) %go through unqiue file names with subrec info
@@ -81,53 +83,53 @@ for i = 1:numel(FnRoot_wSubRecInfo) %go through unqiue file names with subrec in
     end
 end
 
-writetable(table(Fname_TimeBnSectionsFlag,Num_TimeBnSectionsLessThan30min),strcat(BasePath,'FilesWithLessThan30minBnSections.csv')) %write teble
+writetable(table(Fname_TimeBnSectionsFlag,Num_TimeBnSectionsLessThan30min),strcat(BasePath,'MetadataFiles/FilesWithLessThan30minBnSections.csv')) %write teble
 
 %---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-%The following was written to check if there are recorder pauses during sections. As of now, there aren't, so I am commenting this out. You can
-%uncomment it if you want to check for yourself. PLEASE UNCOMMENT AS NECESSARY
-
-%now check if any sections have pauses. First, get relevant path
-PauseTimePath = '/Users/ritwikavps/Desktop/GoogleDriveFiles/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/Data/LENAData/A3_PauseTimes/';
-
-for i = 1:numel(FnRoot_wSubRecInfo) %go through vector with file name roots with subrec info
-
-    PauseTab = readtable(strcat(PauseTimePath,FnRoot_wSubRecInfo{i},'_PauseTimes.txt'),'Delimiter','\t'); %Read out relevant pause time file
-    if ~isfile(strcat(PauseTimePath,FnRoot_wSubRecInfo{i},'_PauseTimes.txt')) %if the file does not exist, display file name
-        FnRoot_wSubRecInfo{i}
-    end
-
-    if isempty(PauseTab) == 0 %if there ARE pauses
-        HumTab = readtable(strcat(destinationpath,...
-            regexprep(FnRoot_wSubRecInfo{i},'[a-z]+',''),...
-            '_TSSubrecMerged.csv')); %read in corresponding data table
-        PauseEndTime = PauseTab.Var2; %get times at which recorder was apused
-
-        NumSections = unique(HumTab.SectionNum); %get number of sections in the file
-        Ctr = 0; 
-        SecStart = []; SecEnd = [];
-        for j = 1:numel(NumSections)
-            %subset table for each section number which also corresponds to the subrec in questiin
-            SubTab = HumTab(HumTab.SectionNum == NumSections(j) & contains(HumTab.FnameUnmerged,FnRoot_wSubRecInfo{i}),:);
-            if ~isempty(SubTab) %if the sub-setted table is not empty
-                Ctr = Ctr + 1;
-                SecStart(Ctr) = min(SubTab.start); SecEnd(Ctr) = max(SubTab.xEnd); %get start and end times of secton
-            end 
-        end
-
-        if ~isempty(SecStart) %if the vector start times of section exists
-            for k = 1:numel(SecStart)
-                for l = 1:numel(PauseEndTime)
-                    %check if there is a pause time between start and end of a section
-                    if (PauseEndTime(l) > SecStart(k)) && (PauseEndTime(l) < SecEnd(k))
-                        FnRoot_wSubRecInfo{i}
-                    end
-                    %as it turns out, there aren't any pauses, so I am not writing code to analyse that condition
-                end
-            end
-        end
-    end  
-end
+% %The following was written to check if there are recorder pauses during sections. As of now, there aren't, so I am commenting this out. You can
+% %uncomment it if you want to check for yourself. PLEASE UNCOMMENT AS NECESSARY
+% 
+% %now check if any sections have pauses. First, get relevant path
+% PauseTimePath = '/Users/ritwikavps/Desktop/GoogleDriveFiles/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/Data/LENAData/A3_PauseTimes/';
+% 
+% for i = 1:numel(FnRoot_wSubRecInfo) %go through vector with file name roots with subrec info
+% 
+%     PauseTab = readtable(strcat(PauseTimePath,FnRoot_wSubRecInfo{i},'_PauseTimes.txt'),'Delimiter','\t'); %Read out relevant pause time file
+%     if ~isfile(strcat(PauseTimePath,FnRoot_wSubRecInfo{i},'_PauseTimes.txt')) %if the file does not exist, display file name
+%         FnRoot_wSubRecInfo{i}
+%     end
+% 
+%     if isempty(PauseTab) == 0 %if there ARE pauses
+%         HumTab = readtable(strcat(destinationpath,...
+%             regexprep(FnRoot_wSubRecInfo{i},'[a-z]+',''),...
+%             '_TSSubrecMerged.csv')); %read in corresponding data table
+%         PauseEndTime = PauseTab.Var2; %get times at which recorder was apused
+% 
+%         NumSections = unique(HumTab.SectionNum); %get number of sections in the file
+%         Ctr = 0; 
+%         SecStart = []; SecEnd = [];
+%         for j = 1:numel(NumSections)
+%             %subset table for each section number which also corresponds to the subrec in questiin
+%             SubTab = HumTab(HumTab.SectionNum == NumSections(j) & contains(HumTab.FnameUnmerged,FnRoot_wSubRecInfo{i}),:);
+%             if ~isempty(SubTab) %if the sub-setted table is not empty
+%                 Ctr = Ctr + 1;
+%                 SecStart(Ctr) = min(SubTab.start); SecEnd(Ctr) = max(SubTab.xEnd); %get start and end times of secton
+%             end 
+%         end
+% 
+%         if ~isempty(SecStart) %if the vector start times of section exists
+%             for k = 1:numel(SecStart)
+%                 for l = 1:numel(PauseEndTime)
+%                     %check if there is a pause time between start and end of a section
+%                     if (PauseEndTime(l) > SecStart(k)) && (PauseEndTime(l) < SecEnd(k))
+%                         FnRoot_wSubRecInfo{i}
+%                     end
+%                     %as it turns out, there aren't any pauses, so I am not writing code to analyse that condition
+%                 end
+%             end
+%         end
+%     end  
+% end
 %---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 function [T_Op] = GetSubrecsStitchedTab(U_FnRoot_i,TSpath,FnRoot_wSubRecInfo,CodingSheet)
@@ -168,8 +170,8 @@ function [T_Op] = GetSubrecsStitchedTab(U_FnRoot_i,TSpath,FnRoot_wSubRecInfo,Cod
     %Now, we assign section numbers to utterances, based on section start and end times per the coding spreadsheet. First, subset coding spreadsheet info for the filename.
     CodingSubTab = CodingSheet(contains(CodingSheet.FileName,U_FnRoot_i),:);
     for j = 1:numel(CodingSubTab.StartTimeSS) %go through each pair of section start and end time
-        TempIndVec = IndexVec((TStab.xEnd >= (CodingSubTab.StartTimeSS(j)-3)) & (TStab.start <= (CodingSubTab.EndTimeSS(j)+3))); %pick out all utterances that have any portion between the
-        %coding spreadsheet start and end time for a given section, and designate indices for all those utterances with the same section number (see next line) Note that I am providing a 3 second 
+        TempIndVec = IndexVec((TStab.xEnd >= (CodingSubTab.StartTimeSS(j)-1)) & (TStab.start <= (CodingSubTab.EndTimeSS(j)+1))); %pick out all utterances that have any portion between the
+        %coding spreadsheet start and end time for a given section, and designate indices for all those utterances with the same section number (see next line) Note that I am providing a 1 second 
         % buffer to the coding spreadsheet end and start times to account for any sub-vocs that might fall outside of the bounds after being chopped up into overlapping and non-overlapping subvocs.
         SectionNumVec(TempIndVec) = j;
     end

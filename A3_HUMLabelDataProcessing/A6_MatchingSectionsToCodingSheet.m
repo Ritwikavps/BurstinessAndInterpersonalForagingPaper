@@ -36,10 +36,16 @@ for i = 1:numel(HumFiles) %go through list of human listener labelled files
     CodingSubTab = CodingSpreadsheet(contains(CodingSpreadsheet.FileName,H_FnRoot),:); %get subset of coding spreadsheet that corresponds to the human-labelled file.
 
     IsSectionAnnotated = zeros(size(CodingSubTab.StartTimeSS)); %initialise vector to flag whether the section has been annotated or not
+    CorrespHumSecNum = []; %This is to store the human-listener labelled section number in  the order that it corresponds to the 5 min sections as ordered in the coding spreadhseet
+    % so the LENA-labelled 5 min sections can be assigned the same section number as the corresponding human-labelled 5 min section. 
     for j = 1:numel(H_FirstEndTime) %flag sections that HAVe been annotated
         for k = 1:numel(CodingSubTab.StartTimeSS)
-            if (H_FirstEndTime(j) >= CodingSubTab.StartTimeSS(k)) && (H_LastStartTime(j) <= CodingSubTab.EndTimeSS(k))
+            if (H_FirstEndTime(j) >= CodingSubTab.StartTimeSS(k)-1) && (H_LastStartTime(j) <= CodingSubTab.EndTimeSS(k)+1) %this is a 1 second buffer to the section start and end time per
+                %the coding spreadsheet to account for the fact that we have thrown out overlaps. Essentially, by choppinhg up vocs into non-overlapping sub-vocs, sometimes, we retain a sub-voc that
+                % is fully out side the start or end time per the coding spreadsheet, but this amounts to less than 10 vocs total across the validation dataset, and the 1 second buffer is enough to let 
+                % these vocs to not trigger a flag.
                 IsSectionAnnotated(k) = 1;
+                CorrespHumSecNum(k) = U_SectionNum(j);
             end
         end
     end
@@ -47,18 +53,15 @@ for i = 1:numel(HumFiles) %go through list of human listener labelled files
     LENA_tab = readtable(strcat(LENA_ZscoredTSPath,H_FnRoot,'_ZscoredAcousticsTS_LENA.csv'),'Delimiter',  ',');%read in corresponding LENA data table
     MatchedLENATab = array2table(zeros(0,size(LENA_tab,2))); %initialise table to store correponsing table of matched LENA 5 minute sections, all stitched together
     MatchedLENATab.Properties.VariableNames = LENA_tab.Properties.VariableNames;
-
-    SectionNumber_Temp = 0; %initialise temporary section number tracker to keep track of the section number of the 5 minute section in the matched LENA table.
     SectionNumVec = []; %initialise vector to store the section number
     for j = 1:numel(IsSectionAnnotated) %go through the flag vector that keeps track of whether a section was annotated
         if IsSectionAnnotated(j) == 1
-            SectionNumber_Temp = SectionNumber_Temp + 1; %if the section has been annotated, add to section number tracker
-            
-            LENA_SubTab = LENA_tab((LENA_tab.xEnd >= CodingSubTab.StartTimeSS(j) & LENA_tab.start <= CodingSubTab.EndTimeSS(j)),:); %pick out all utterances within the coding spreadsheet
+            LENA_SubTabByFname = LENA_tab(contains(LENA_tab.FileNameUnMerged,CodingSubTab.FileName{j}),:); %get the correct subrec file name
+            LENA_SubTab = LENA_SubTabByFname((LENA_SubTabByFname.xEnd >= CodingSubTab.StartTimeSS(j) & LENA_SubTabByFname.start <= CodingSubTab.EndTimeSS(j)),:); %pick out all utterances within the coding spreadsheet
             %bounds for the specific section
             MatchedLENATab = [MatchedLENATab; LENA_SubTab]; %add to table
 
-            SectionNumVec = [SectionNumVec; SectionNumber_Temp*ones(size(LENA_SubTab.start))]; %add relevant section number to the section number vector
+            SectionNumVec = [SectionNumVec; CorrespHumSecNum(j)*ones(size(LENA_SubTab.start))]; %add relevant section number to the section number vector
         end
     end
 
