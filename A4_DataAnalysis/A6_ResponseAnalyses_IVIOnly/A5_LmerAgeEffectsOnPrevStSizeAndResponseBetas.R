@@ -1,13 +1,12 @@
 #Ritwika VPS
-##This script takes data tables with current and previous IVIs, for each recording day at different rersponse window thresholds, and gets the
-#beta values for previous step size effect and response effect at the corpus level. This is done for LENA day-long data, human-listener labelled 5 min sections, and corresponding LENA 5
-#min sections
+#This script takes data tables with current and previous IVIs, for each recording day at different rersponse window thresholds, and gets the
+#age effects on prev step size beta as well as response betas with and without the prev step size control, using a quadratic lmer model
 
 #load required librarues
 library(lme4); library(lmerTest); library(pracma); library(sjmisc); library(tidyverse)
 
 #source necessary functions
-source('~/Desktop/GoogleDriveFiles/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/CodeForGitHub/A4_DataAnalysis/A6_ResponseAnalyses_IVIOnly/GetLmerCoeffsForResponseBetas_w_OptlPrevStSizeCtrl.R')
+source("~/Desktop/GoogleDriveFiles/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/CodeForGitHub/A4_DataAnalysis/A6_ResponseAnalyses_IVIOnly/GetLmerCoeffsForAgeEffects.R")
 
 FilePattern <- '.*IviOnly.csv' #this is the string to pick out relevant files (See user-deifned fn WriteOpToFile_RespEffBetas for details)
 CILvl <- 99.9 #specify desired confidence interval in the form of a percent value. That is, for 95% confidence intervals, CILvl = 95 (correponding to 
@@ -34,10 +33,6 @@ DataType_Hum_ChildDirAd <- 'HumChildDirAdOnly'
 WorkingDir <- c(WorkingDir_LENA,  WorkingDir_LENA5min,  WorkingDir_Hum_AllAd,   WorkingDir_Hum_ChildDirAd)
 DataType <- c(DataType_LENA,      DataType_LENA5min,    DataType_Hum_AllAd,     DataType_Hum_ChildDirAd)
 
-for (PrevStSiCtrlorNo in c('wCtrl','woCtrl')){ #
-  WriteOpToFile_RespEffBetas(WorkingDir,FilePattern,DataType,WriteOpPath,PrevStSiCtrlorNo,CILvl)
-}
-
-
-
+RecLvlBetasTab <- GetRecLvlBetasFinalTabAndWriteToFile(WorkingDir,FilePattern,DataType,WriteOpPath)
+GetLmerAgeEffOnRespBetaAndWriteOpToFile(RecLvlBetasTab,CILvl,WriteOpPath)
 
