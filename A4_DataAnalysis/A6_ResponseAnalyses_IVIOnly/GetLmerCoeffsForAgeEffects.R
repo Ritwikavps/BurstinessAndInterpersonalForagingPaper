@@ -34,15 +34,15 @@ GetLmerAgeEffOnRespBetaAndWriteOpToFile <- function(RecLvlBetasTab,CILvl,Destina
     for (i_spkr in u_Spkr){
       for (i_dtype in u_DataType){
       
-        Ctr <- Ctr + 1 #increment counter variable
         SubsetTab <- filter(RecLvlBetasTab, RespWin_Seconds == i_rwin & ResponseType == i_spkr & DataType == i_dtype) #subset relevant table
+        SubsetTab$InfID <- as_factor(SubsetTab$InfID) #make infant ID categorical variable
+        #Note that we are not scaling anything, cuz we want to see how the effect looks for age, not scaled age
         
         for (i_beta in 4:6){ #go through the three effect sizes we are interested in (PrevSt_Beta, Response_Beta_wCtrl,Response_Beta_woCtrl)
           #Note that this indexing is based on how the input table is structured
 
-          SubsetTab$InfID <- as_factor(SubsetTab$InfID) #make infant ID categorical variable
-          #Note that we are not scaling anything, cuz we want to see how the effect looks for age, not scaled age
-          
+          Ctr <- Ctr + 1 #increment counter variable
+
           #(This whole bit below is to avoid a weird error in the lmer model; 
           #see error: '"Error in KhatriRao(sm, t(mm)) : (p <- ncol(X)) == ncol(Y) is not TRUE" on stack exchange)
           TabForLm <- tibble(SubsetTab[,i_beta],SubsetTab$InfID,SubsetTab$InfAge_Months) #make tibble with relevnt vars
