@@ -11,7 +11,7 @@ source('~/Desktop/GoogleDriveFiles/research/IVFCRAndOtherWorkWithAnne/Pre_regist
 BasePath <- '~/Desktop/GoogleDriveFiles/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/Data/' 
 setwd(str_c(BasePath,'LENAData/A1_ItsFiles/')) #Set working directory
 ItsFileTab <- read_csv(str_c(BasePath,'MetadataFiles/ItsFileDetailsShareable.csv')) #Read metadata file
-OpFileName <- str_c(BasePath,'MetadataFiles/MetadataInfAgeAndID1.csv') #Get output file name
+OpFileName <- str_c(BasePath,'MetadataFiles/MetadataInfAgeAndID.csv') #Get output file name
 ################################################################################################################################################################################################################################
 
 CurrPath <- getwd() #Get current path

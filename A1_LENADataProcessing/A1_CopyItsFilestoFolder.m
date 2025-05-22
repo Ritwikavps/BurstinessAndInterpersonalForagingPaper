@@ -1,5 +1,4 @@
-clear all
-clc
+clear; clc
 
 %Ritwika VPS, UC Merced, UCLA Comm; Feb2021
 %This script goes into the IVFCR folder, goes into all folders that have LENA data, copy all .its in all folders into a new folder so pre-processing can be done
@@ -10,7 +9,7 @@ clc
 %----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 %SOME NOTES:
     %-If you don't have all your .its files in a single folder, this is the first script you schould run. YOU WILL NOT NEED THIS IF YOUR DATA IS ALREADY ORGANISED INTO A FOLDER OF
-      %.its FILES (%WOULD BE IDEAL TO WRITE THIS INTO A .sh SCRIPT)
+      %.its FILES 
     %-As of April 2021, there is a NOT_IVFCR folder in LENA_Exports (not named as such in the renamed folder). I have coded in not including the .its files for this directory. If there are
       %other .its files you would like to not include, please delete them manually after copying, or adapt this script accordingly
   
@@ -37,7 +36,7 @@ for i = 1:numel(ItsDirs) %Loop through directory list
         cd(s.path); %Go into the relevant directory
         ItsList = dir('*.its'); %This is just to have a .txt file that has file names and corresponding Infant codes, just in case. This also helps to check if there are no .its files
 
-        if isempty(ItsList) == 0 %Proceed if there ARE .its files
+        if ~isempty(ItsList) %Proceed if there ARE .its files
             for j = 1:numel(ItsList)
                 Ctr = Ctr + 1; %Update Ctr
                 FNRoot{Ctr,1} = strrep(ItsList(j).name,'.its',''); %remove .its from file name

@@ -1,5 +1,4 @@
-clear all
-clc
+clear; clc
 
 %Ritwika VPS, March 2022
 %UCLA Dpmt of Comm
@@ -116,7 +115,3 @@ cd(strcat(BasePath,'Data/MetadataFiles/')); %Go to metadata folder; CHANGE PATH 
 %----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 T_Metadata = table(FileNameRoot,InfantAgeDays,InfantAgeMonth,InfantID);
 writetable(T_Metadata,'MergedTSAcousticsMetadata.csv')
-
-
-
-

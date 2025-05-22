@@ -1,5 +1,4 @@
-clear all
-clc
+clear; clc
 
 %Ritwika VPS
 %April 2021
@@ -87,3 +86,5 @@ parfor i = 1:numel(N) %Go through each subfolder; parallelising for faster proce
         end 
     end 
 end
+
+clear all %just so EVERYTHING is cleared

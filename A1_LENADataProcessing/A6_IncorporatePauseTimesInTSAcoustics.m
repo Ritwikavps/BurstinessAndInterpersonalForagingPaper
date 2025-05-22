@@ -1,5 +1,4 @@
-clear all
-clc
+clear; clc
 
 %Ritwika VPS; Feb 2022
 %UCLA, Dpmt of Comm
