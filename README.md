@@ -1,16 +1,19 @@
-# IVFCR_ExtendedStudy_LENAValidation
+# San Joaquin Valley corpus: data processing and analysis for 'Burstiness and Interpersonal Foraging Betweeen Human Infants and Caregivers in the Vocal Domain' and associated projects
 
-This directory contains code that extracts, cleans up, processes, and analyses day-long recordings of infant and adult caregiver vocalisations and to test the validity of the LENA automatic labelling using human listener-labelled data
+This directory contains code that does the following:
+- extracts, cleans, processes, and analyses day-long recordings of infant and adult caregiver vocalisations for the paper 'Burstiness and Interpersonal Foraging Betweeen Human Infants and Caregivers in the Vocal Domain' and associated projects
+- performs validation of the LENA automatic labelling using human listener-labelled data
+- plots all figures in the paper 'Burstiness and Interpersonal Foraging Betweeen Human Infants and Caregivers in the Vocal Domain' and associated supplementary file
 
-The directory names are indexed as A1, A2, etc. to indicate the suggested order to follow. If all directories are not currently named with a prefix of the form 'A<number>', they will be in future updates.
+The directory names are indexed as A1, A2, etc. to indicate the suggested order to follow. 
 
 `A1_LENADataProcessing` contains code to extract LENA labels as well as acoustics from .wav and .its files (MATLAB, Bash, and R). Code in this directory also generates a metadata file for the LENA data. For details, see `README` in the directory. The final processed data obtained from the pipeline in this directory can be found at https://osf.io/5xp7z/
 
 `A2_HUMLabelDataCleanUp` contains code to clean-up human listener annotated data (R, MATLAB, Bash, and Perl; for details, see `README` in the directory).
 
-`A3_HUMLabelDataProcessing` contains code to extract human listener labels and acoustics of labelled vocalisations from cleaned-up human listener annotation files (.eaf files). Code in `A2_HUMLabelDataCleanUp` and `A1_LENADataProcessing` MUST be executed before executing code in this directory. Alternatively, you can also work directly with .eaf files that have been cleaned-up. The final processed data obtained from the pipeline in this directory can be found at https://osf.io/5xp7z/
+`A3_HUMLabelDataProcessing` contains code to extract human listener labels and acoustics of labelled vocalisations from cleaned-up human listener annotation files (.eaf files). Code in `A2_HUMLabelDataCleanUp` and `A1_LENADataProcessing` MUST be executed before executing code in this directory. If you have cleaned up .eaf files, you can also work directly with those in lieu of executing code in `A2_HUMLabelDataCleanUp`. The final processed data obtained from the pipeline in this directory can be found at https://osf.io/5xp7z/
 
-`A4_DataAnalysis` contains code to analyse data as presented in  (link paper/pre-preint when available). 
+`A4_DataAnalysis` contains code to analyse data as presented in the paper 'Burstiness and Interpersonal Foraging Betweeen Human Infants and Caregivers in the Vocal Domain' and associated supplementary file. 
 
 ##
 Please make sure that all paths are correct before executing scripts. 
