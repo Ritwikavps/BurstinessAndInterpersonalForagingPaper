@@ -14,6 +14,8 @@ Please note that only files with the prefix A1, A2, etc. are executables, while 
 
 `5_GetZscoredData_LENAandHumLabels.m` takes the acoustics (pitch, amplitude, duration) from the entire dataset (both LENA and human-listener labelled data), log transforms duration and mean pitch, z-scores the data, and saves the z-scored acoustics data and other time series data for both LENA and human-listener labelled data. Please note that this means that the z-scoring is done wrt the combined LENA- and human-listener labelled data, since the acoustics for both were estimated independently. This also means that the z-scored LENA data is *only* generated at this step. 
 
+The z-scoring of the combined LENA and human-listener data is done after extracting human-listener labelled data (the code for which is provided in `A3_HUMLabelDataProcessing`). Note that the associated paper does not present results based on acoustics or duration data (which are the z-scored variables). Nevertheless, this is part of the data processing pipeline and this code is presented here as part of the codebase. 
+
 `A6_MatchingSectionsToCodingSheet.m` matches the human-listener annotated 5 minute sections to the corresponding 5 minute sections in the LENA-labelled data, and saves these data tables, to facilitate validation.
 
 For more specific details, please read comments about paths and other notes in the files before executing them.
