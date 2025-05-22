@@ -5,8 +5,7 @@ This directory contains code that does the following:
 - performs validation of the LENA automatic labelling using human listener-labelled data
 - plots all figures in the paper 'Burstiness and Interpersonal Foraging Betweeen Human Infants and Caregivers in the Vocal Domain' and associated supplementary file
 
-Languages: MATLAB, R, Bash, Perl
-Versions: MATLAB R2024b; R version 4.2.0 (2022-04-22) -- "Vigorous Calisthenics"
+Languages: MATLAB (R2024b), R (version 4.2.0 (2022-04-22) -- "Vigorous Calisthenics"), Bash, Perl
 
 The directory names are indexed as A1, A2, etc. to indicate the suggested order to follow. 
 
