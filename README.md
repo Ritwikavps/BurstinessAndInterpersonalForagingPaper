@@ -1,4 +1,4 @@
-# San Joaquin Valley corpus: data processing and analysis for 'Burstiness and Interpersonal Foraging Betweeen Human Infants and Caregivers in the Vocal Domain' and associated projects
+# San Joaquin Valley corpus: data processing and analysis code for 'Burstiness and Interpersonal Foraging Betweeen Human Infants and Caregivers in the Vocal Domain' and associated projects
 
 This directory contains code that does the following:
 - extracts, cleans, processes, and analyses day-long recordings of infant and adult caregiver vocalisations for the paper 'Burstiness and Interpersonal Foraging Betweeen Human Infants and Caregivers in the Vocal Domain' and associated projects
