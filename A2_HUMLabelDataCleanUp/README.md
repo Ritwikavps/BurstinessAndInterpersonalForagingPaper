@@ -18,7 +18,7 @@ Data required to execute the scripts in this directory contain potentially ident
 
 At this point of running the clean-up pipeline, all errors in the .eaf files that require a trained human-listener to listen to audio and make corrections to annotations, should be addressed. This would complete one round of (non-human listenrr) data clean-up. 
 
-Executing `A1_ParseEafFilesAndFlagErrors.R` on the cleaned-up .eaf files (by indicating the post-clean up status of files in the script) will generate .csv files based on the cleaned-up human-listener labelled files, on which further pre-processing is carried out. As a check-and-balance step, I also recommend running `A2_GetErrorSummaryFromCsvFiles.m` on this set of files, so that any additional errors that may have crept up can be addressed. 
+Executing `A1_ParseEafFilesAndFlagErrors.R` on the cleaned-up .eaf files (by indicating the post-clean up status of files in the script; note that clean-up is assumed to include both automated clean-up using code in this folder as well as manual clean-up by human listeners where applicable, unless otherwise specified) will generate .csv files based on the cleaned-up human-listener labelled files, on which further pre-processing (using code in the folder `A3_HUMLabelDataProcessing`) is carried out. As a check-and-balance step, I also recommend running `A2_GetErrorSummaryFromCsvFiles.m` on this set of files, so that any additional errors that may have crept up can be addressed. 
 
 For more specific details, please read comments about paths and other notes in the files before executing them.
 
