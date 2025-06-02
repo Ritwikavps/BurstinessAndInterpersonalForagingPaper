@@ -22,5 +22,5 @@ The directory names are indexed as A1, A2, etc. to indicate the suggested order 
 ##
 Please make sure that all paths are correct before executing scripts. 
 
-To the best of the author's knowledge, lines of code where paths might need changing or other important notes are present have been demarcated by '%-------------------------------------------' (in MATLAB) or '#########################################################' (in R) above and below the block of code/comments that require the reader's attention. 
+To the best of the author's knowledge, lines of code where paths might need changing or other important notes are present have been demarcated by `%-------------------------------------------` (in MATLAB) or `#########################################################` (in R) above and below the block of code/comments that require the reader's attention. 
 ##
