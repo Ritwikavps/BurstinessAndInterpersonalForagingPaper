@@ -67,7 +67,10 @@ GetLineNumsToDelete <- function(EafFileName,ToDeleteLineNumsDetails_df){
     
     for (i in 1:numel(ToDeleteLineNumsDetails_df$AnnotIdLineNum)){ #go through each row of table
       
-      AnnotBlockStartLine = ToDeleteLineNumsDetails_df$AnnotIdLineNum[i] - 1 #identify start and end line nms of annotation sub-blkock
+##################################################################################################################################################################################
+      #These may change as the eaf files go through multiple cleaning rounds or just being opened in ELAN on different systems, so please edit 
+      #accordingly. There are checks for this in the if block below
+      AnnotBlockStartLine = ToDeleteLineNumsDetails_df$AnnotIdLineNum[i] - 3 #identify start and end line nms of annotation sub-blkock
       AnnotBlockEndLine = ToDeleteLineNumsDetails_df$AnnotationLineNum[i] + 2
       
       #check if start and end lines are correct
@@ -78,6 +81,7 @@ GetLineNumsToDelete <- function(EafFileName,ToDeleteLineNumsDetails_df){
         print(LineVec[AnnotBlockStartLine])
         print(LineVec[AnnotBlockEndLine])
       }
+##################################################################################################################################################################################
     }
   }
   return(LineNumsToDelete)

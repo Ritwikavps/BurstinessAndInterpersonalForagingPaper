@@ -37,8 +37,8 @@ function [OpTab] = GetRogueInfOrAdultAnnotsInOtherTiers(CsvDir,CsvFnRootSuffix)
     RecastTab = OpTab(strcmpi(OpTab.TierTypeVec,'Recast'),:);
     
     %get all unique annotations in Label tier and Recast tier
-    LabelAnnot = lower(unique(LabelTab.Annotation));
-    RecastAnnot = lower(unique(RecastTab.Annotation));
+    LabelAnnot = lower(unique(strtrim(LabelTab.Annotation)));
+    RecastAnnot = lower(unique(strtrim(RecastTab.Annotation)));
     
     %Check if Label is all L; and if Recast is all R. If yes, remove those tiers flagged
     if (strcmp(LabelAnnot,'l')) && (strcmp(RecastAnnot,'r'))
@@ -63,8 +63,8 @@ function [OpTab] = GetRogueInfOrAdultAnnotsInOtherTiers(CsvDir,CsvFnRootSuffix)
             SubTab = CsvTab(contains(CsvTab.TierTypeVec,TiersToCheck{i},'IgnoreCase',true),:); %subset table for current tier ONLY
     
             for j = 1:numel(DesiredAnnotList)
-                TempOpTab = [TempOpTab; SubTab(strcmpi(SubTab.Annotation,DesiredAnnotList{j}),:)]; %add to op tab if there are any annotations belonging to the adult utt dir tier or
-                %the infant voc type tier, as specified by the DesiredTierName variable
+                TempOpTab = [TempOpTab; SubTab(strcmpi(strtrim(SubTab.Annotation),DesiredAnnotList{j}),:)]; %add to op tab if there are any annotations belonging to the 
+                % adult utt dir tier or the infant voc type tier, as specified by the DesiredTierName variable
             end
         end
     end

@@ -8,6 +8,7 @@
 ########################################################################################################################################################################
 GetEafTimeRefTimeValue <- function(EafFileName){ 
 
+  #Time slot lines are of the form: <TIME_SLOT TIME_SLOT_ID="ts1" TIME_VALUE="5160136"/>
   #first, establish a connection (which is an interface to the file) to the desires .eaf file
   myCon = file(description = EafFilename, open="r", blocking = TRUE) #establish connection
   
@@ -96,12 +97,18 @@ GetAnnotationDetails <- function(EafFileName){
     } # If the line is empty, exit. Assign last line in the file as the tier end line num
     
     #Then check to identify the start of valid tiers (Excluding the first 'default' tier)
+    #While the standrad tier identifier text is '<TIER LINGUISTIC_TYPE_REF="', tiers created in the music labelling pass (not relevant for the 
+    #burstiness paper) and later passes have identifiers '<TIER DEFAULT_LOCALE="en" LINGUISTIC_TYPE_REF="'. Therefore, I use the common text in 
+    #both these to identify tiers. This means that there are sometimes duplicates in the parsed data. However, these duplicates are not in the infant
+    #voc type or adult utterance tiers, which are the relevant tiers for the burstiness paper, so no downstream action has been taken for this isse.
     if ((str_contains(myLine,'LINGUISTIC_TYPE_REF="')) && (str_contains(myLine,'TIER_ID="'))){
+      #Tier id lines are normally of the form: <TIER LINGUISTIC_TYPE_REF="default-lt" TIER_ID="Infant Voc Type">
+      #(see comments above for more details)
       
       #get tier id for the tier
       TierIdCurrent = gsub('">','',gsub('.*TIER_ID="','',myLine))
       
-      #check if the tier id has already been stored (and that it is not the default id)
+      #check that the the tier id is not the default id
       if  (!(str_contains(TierIdCurrent,'default',ignore.case = TRUE))){ #we don't want to include 
         #the defauilt tier, so only proceed if current tier id does not conatin 'default'
         
@@ -119,6 +126,14 @@ GetAnnotationDetails <- function(EafFileName){
       #the vector to store the item will be populated by NA by default
       #This is another reason why we want to check for each item separately
       if (str_contains(myLine,'ALIGNABLE_ANNOTATION ANNOTATION_ID="')){ 
+        
+        #relevant blocks in the .eaf files look like this:
+        #<ALIGNABLE_ANNOTATION ANNOTATION_ID="a413"
+        #TIME_SLOT_REF1="ts51" TIME_SLOT_REF2="ts52">
+        #In the very first clean up pass, the annotation line looked like this: 
+        #<ALIGNABLE_ANNOTATION ANNOTATION_ID="a39" TIME_SLOT_REF1="ts723" TIME_SLOT_REF2="ts724">
+        #The code below reflects this format, and since attempting to remove '" TIME_SLOT_REF1=".*' only results in the annotation 
+        #id having an extra trailing ", I am going to leave it be.
         
         AnnotId_ctr = AnnotId_ctr  + 1
         AnnotId[AnnotId_ctr] = gsub('" TIME_SLOT_REF1=".*','',
@@ -148,6 +163,8 @@ GetAnnotationDetails <- function(EafFileName){
       if (str_contains(myLine,'<ANNOTATION_VALUE')){ #we ue this stribg because some files have <ANNOTATION_VALUE/>
         #instead of <ANNOTATION_VALUE>X</ANNOTATION_VALUE> where X is a sample annotation
         
+        #The annotation line looks like this: <ANNOTATION_VALUE>uh</ANNOTATION_VALUE>
+        
         Annotation_ctr = Annotation_ctr + 1
         Annotation[Annotation_ctr] = gsub('>','',gsub('</ANNOTATION_VALUE>','',
                                                       gsub('<ANNOTATION_VALUE','',myLine)))
@@ -168,12 +185,13 @@ GetAnnotationDetails <- function(EafFileName){
     
     TierInfo_df <- data.frame(StartTimeRef,StartTimeLineNum,EndTimeRef,EndTimeLineNum,AnnotId,AnnotIdLineNum,Annotation,AnnotationLineNum,TierTypeVec)
   } else { #if not, create empty df + output error message
-    print(sprintf('mismatch in number of start time ref, end time ref, annotation id, and/or annotation in eaf file %s',EafFilename))
+    print(sprintf('Mismatch in number of start time ref, end time ref, annotation id, and/or annotation in eaf file %s',EafFilename))
   }
   
   #check if file has key tiers
   for (j in 1:numel(KeyTierList)){
-    if (sum(grepl(KeyTierList[j],TierIdVec)) != 1){#if there isn't a block for desired tier, print error message
+    if (sum(grepl(KeyTierList[j],TierIdVec)) == 0){#if there isn't a block for desired tier, print error message
+      #(Note that there are sometimes multiple instances of the same tier with only one of them having annotations (based on examples I have looked at))
       print(sprintf('No %s tier in file %s',KeyTierList[j],EafFilename))
     }
   }

@@ -42,7 +42,14 @@ GetTierListInfo <- function(EafFileName){
       break
     } # If the line is empty, exit. Assign last line in the file as the tier end line num
     
-    #Then check to identify the start of valid tiers (Excluding the first 'default' tier)
+    #Then check to identify the start of valid tiers (Excluding the first 'default' tier).
+    #Tier id line is usually of the form: <TIER LINGUISTIC_TYPE_REF="default-lt" TIER_ID="Infant Voc Type">
+    #However, there are a few instances where, instead, this line is of the form:
+    #<TIER DEFAULT_LOCALE="en" LINGUISTIC_TYPE_REF="default-lt" TIER_ID="Infant Voc Type">
+    #Therefore, I use the common strings LINGUISTIC_TYPE_REF=" and TIER_ID=".
+    #In addition, there is at least one file adult utterance direction tiers, one with the <TIER LINGUISTIC_TYPE_REF="default-lt" TIER_ID= string
+    #and the other with the <TIER DEFAULT_LOCALE="en" LINGUISTIC_TYPE_REF=" string. For this file, the second instance of the adult utterance direction
+    #tier (with the <TIER DEFAULT_LOCALE="en" LINGUISTIC_TYPE_REF=" string) is empty, and as such, no action is required to account for it. 
     if ((str_contains(myLine,'LINGUISTIC_TYPE_REF="')) && (str_contains(myLine,'TIER_ID="'))){
       
       #get tier id for the tier
