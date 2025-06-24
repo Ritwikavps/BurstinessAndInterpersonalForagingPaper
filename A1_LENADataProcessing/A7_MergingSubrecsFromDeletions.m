@@ -5,6 +5,8 @@ clear; clc
 
 %This script stitches together TS + pauses from the same recording day. This is because we have recordings that are named: <File name root>_Section1, <File name root>_Section2, where 
 % these are both from the same infant on the same day.
+%In addition, the name of the orginal audi files (which contain potentially identifying info) have been removed from the wavfile column in the output files
+% from this script!.
 
 %----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 %CHANGE PATHS AND STRINGS ACCORDINGLY
@@ -87,6 +89,18 @@ for i = 1:numel(U_FileNameRoot)
         [FnamePreSticthVec{PreStitchFileNumelCumsum(j)+1:PreStitchFileNumelCumsum(j+1)}] = deal(PreStitchFn{j});
     end
     T_new.FileNameUnMerged = FnamePreSticthVec; %Add column
+
+    SectionNumVec = GetSectionNumVec(T_new); %get section number info from subrecend colum
+    T_new.SectionNum = SectionNumVec; %add section number column to table
+    T_new = removevars(T_new,{'SubrecEnd'}); %remove the subrecend column
+
+    %re-compute duration as the difference between end and start of a voc (some durations from the acoustics TS code have NaN values because the 
+    % corresponding pitch and/or amplitude could not be calculated)
+    Duration = T_new.xEnd - T_new.start;
+    if ~isempty(Duration(Duration <= 0)) %check that there are no negative or 0 durations
+        error('Zero or negative durations present')
+    end
+    T_new.duration = Duration; 
 
     %Edit wavfile column from table: this column has original file name (and hence, potential id info). This way, only the segment number and speaker ID (chnsp, chnnsp, etc) remains
     T_new.wavfile = regexprep(T_new.wavfile,'.*_Segment','Segment');
