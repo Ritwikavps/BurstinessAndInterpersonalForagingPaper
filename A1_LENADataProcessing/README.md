@@ -1,12 +1,12 @@
 This directory contains all pre-processing code used to prepare LENA data for analyses reported in this study. 
 
-Please note that only files with the prefix A1, A2, etc. are executables, while all other files are supporting functions. Please also note that the executable files need to be executed in the order of prefixes A1 to A7. Finally, files with prefixes A1-A7 require access to data that has potentially identifying information and hence, is only provided to orient the reader, since access to this data is restricted. See the OSF repository associated with this project for details on data organisation and what data is available/not available publicly. For details on output files for each executable script (and which of those output files are shared publicly), see `OpFileMasterMetadata.xlsx` in the main repository. 
+Please note that only files with the prefix A1, A2, etc. are executables, while all other files are supporting functions. Please also note that the executable files need to be executed in the order of prefixes A1 to A7. Finally, files with prefixes A1-A7 require access to data that has potentially identifying information and hence, is only provided to orient the reader, since access to this data is restricted. See the OSF repository associated with this project for details on data organisation and what data is available/not available publicly. For details on output files for each executable script (and which of those output files are shared publicly), see `Metadata_CodeAndFiles.xlsx` in the main repository. 
 
 `A1_CopyItsFilestoFolder.m` copies .its files for each infant to a single common directory. Also creates .csv files with filename and infant ID info.
 
 `A2_WriteInfantAgeCsv.R` parses .its files to compute infant age and write this information to a .csv file. Requires supporting function file `ItsParsingFnsForInfantAge.R`
 
-`A3_RunFolderSegments.sh` runs `segments.pl` on .its files to get vocal segments as identified by LENA.
+`A3_RunFolderSegments.sh` runs `segments.pl` on .its files to get sound segments as identified by LENA.
 
 `A4_RunFolderRecorderpauses.sh` runs `recorderpauses.pl` on .its files to get info about incidences of the recorder being paused so that utterances from different sub-recordings aren't treated as temporally sequential.
 
