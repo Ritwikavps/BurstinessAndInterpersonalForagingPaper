@@ -9,7 +9,7 @@ This directory contains code that does the following:
 
 Languages: MATLAB (R2024b), R (version 4.2.0 (2022-04-22) -- "Vigorous Calisthenics"), Bash, Perl
 
-Data files with potentially identifying information are not available publicly. As such, some code in the `A1_LENADataProcessing` and `A2_HUMLabelDataCleanUp` folders are only provided to orient the reader since the data to run some scripts are not publicly shared. See the OSF repository associated with this project for details on data organisation and what data is available/not available publicly. For details on output files for each executable script (and which of those output files are shared publicly), see `Metadata_CodeAndFiles.xlsx` (available in this repository as well as in the associated OSF repository).
+Data files with potentially identifying information are not available publicly. As such, some code in the `A1_LENADataProcessing` and `A2_HUMLabelDataCleanUp` folders are only provided to orient the reader since the data to run some scripts are not publicly shared. See the OSF repository associated with this project for all publicly shared data and metadata files associated with this project. For details on output files for each executable script (and which of those output files are shared publicly) as well as data organisation, see `Metadata_CodeAndFiles.xlsx` and `README_FileAndDirectoryDetails.docx` (available in this repository as well as in the associated OSF repository).
 
 The directory names are indexed as A1, A2, etc. to indicate the suggested order to follow. See relevant `README` files in each directory for details about the contents of each directory. See below for a broad overview of the contents of each directory.
 
