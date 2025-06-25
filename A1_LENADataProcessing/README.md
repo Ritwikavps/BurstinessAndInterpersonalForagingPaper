@@ -14,6 +14,6 @@ Please note that only files with the prefix A1, A2, etc. are executables, while 
 
 `A6_IncorporatePauseTimesInTSAcoustics.m` incorporates recorder pause time info into the time series files so that different sub-recordings can be identified.
 
-`A7_MergingSubrecsFromDeletions.m` merges sub-recordings resulting from deletions (which are separate files in the raw .its data) but are from the same recording day for an infant into a single file. Also identifies sub-recordings from deletions and incorporates that information (similar to A6). 
+`A7_MergingSubrecsFromDeletions.m` merges sub-recordings resulting from deletions (which are separate files in the raw .its data) but are from the same recording day for an infant into a single file. Also identifies sub-recordings from deletions and incorporates that information (similar to A6). Requires `GetSectionNumVec.m`.
 
 For more specific details, please read comments about paths and other notes in the files before executing them. 
