@@ -11,11 +11,11 @@ Languages: MATLAB (R2024b), R (version 4.2.0 (2022-04-22) -- "Vigorous Calisthen
 
 Data files with potentially identifying information are not available publicly. As such, some code in the `A1_LENADataProcessing` and `A2_HUMLabelDataCleanUp` folders are only provided to orient the reader since the data to run some scripts are not publicly shared. See the OSF repository associated with this project for details on data organisation and what data is available/not available publicly. For details on output files for each executable script (and which of those output files are shared publicly), see `Metadata_CodeAndFiles.xlsx` (available in this repository as well as in the associated OSF repository).
 
-The directory names are indexed as A1, A2, etc. to indicate the suggested order to follow. 
+The directory names are indexed as A1, A2, etc. to indicate the suggested order to follow. See relevant `README` files in each directory for details about the contents of each directory. See below for a broad overview of the contents of each directory.
 
-`A1_LENADataProcessing` contains code to extract LENA labels as well as acoustics from .wav and .its files (MATLAB, Bash, and R). Code in this directory also generates a metadata file for the LENA data. For details, see `README` in the directory. The final processed data obtained from the pipeline in this directory can be found at https://osf.io/5xp7z/
+`A1_LENADataProcessing` contains code to extract LENA labels as well as acoustics from .wav and .its files (MATLAB, Bash, and R). Code in this directory also generates a metadata file for the LENA data. The final processed data obtained from the pipeline in this directory can be found at https://osf.io/5xp7z/
 
-`A2_HUMLabelDataCleanUp` contains code to clean-up human listener annotated data (R, MATLAB, Bash, and Perl; for details, see `README` in the directory).
+`A2_HUMLabelDataCleanUp` contains code to clean-up human listener annotated data (R, MATLAB, Bash, and Perl).
 
 `A3_HUMLabelDataProcessing` contains code (MATLAB) to extract human listener labels and acoustics of labelled vocalisations from cleaned-up human listener annotation files (.eaf files). Code in `A2_HUMLabelDataCleanUp` and `A1_LENADataProcessing` MUST be executed before executing code in this directory. If you have cleaned up .eaf files, you can also work directly with those in lieu of executing code in `A2_HUMLabelDataCleanUp`. The final processed data obtained from the pipeline in this directory can be found at https://osf.io/5xp7z/
 
