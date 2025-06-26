@@ -1,35 +1,13 @@
-***
-Please note that this is a directory that is actively being modified. Once the contents of this directory is stable, the README will be updated to reflect
-that. 
-***
+This directory contains code written to perform data analysis presented in the Burstiness paper and pre-print (2025).
 
-**
-For more details regarding code in each directory, see README files in the pertinent directory. 
-**
+The directory names are indexed as A1, A2, etc. to indicate the order to follow during execution. See relevant `README` files in each directory for details about the contents of each directory. See below for a broad overview of the contents of each directory.
 
-A1_FirstPassAnalyses contains code used for first pass analyses. Outputs from this directory provides broad insights into the data. Some examples:
+`A1_ResponseAnalyses_IEIs` contains code used to merge vocalisations of the same label type separated by 0 s IEIs (see Section S6.2 in the Burstiness paper pre-print for details), perform the two-step response analyses controlling for correlations between consecutive IEIs, and generate data and results for all associated plotting. These analyses actions are performed for all datasets presented in the Burstiness paper and pre-print. 
     
-    1. What is the total number of AN vocs across the day-long LENA dataset? 
-    2. What is the total number of CHNSP vocs across the 5 minute human listener labelled dataset?
-    
-A2_RecordingLvlSummaryMeasures contains code used to get recording level summaries (eg. mean, median, and 90th percentile values of various acoustic
-measures for different speaker classes) of data (day-long LENA, 5 min human listener labelled data, and corresponding 5 min LENA labelled data), and 
-to do statistical analyses on these summary measures.
+`A2_DataSummaryAnalyses` contains code that gets various summary measures describing the data analysed. The bulk of supplementary figures for the Burstiness paper and pre-print are generated using data summary files resulting from code in this directory.
 
-A3_Correlation_InterVocInt_Vs_StepSizes contains code used to test whether 2d and 3d acoustic step sizes as well categorical step sizes (steps between 
-different vocalisation class types; eg. steps CHNNSP between CHNSP types, steps between C and X annotation types for human-listener annotated data). 
+`A3_ReliabilityAnalyses` performs the reliability analyses whose results are presented in the relevant supplementary section of the Burstiness paper and pre-print. 
 
-A4_RecordingLvlCorrelations contains code used to test whether patterns at the recording level are correlated across temporal scales (eg. day-long LENA vs
-5 min LENA) and annotation type (eg. 5 min human listener annotated data vs. corresponding 5 min LENA labelled data). 
 
-    [Note to self: This folder should come after Time since last interaction analyses]
-
-A4_TimeFromLastInteraction_Vs_NonCategoricalStepSize contains code used to test whether elapsed time since the last interaction between different speaker
-types predict acoustic step sizes between consecutive vocalisations by the same speaker type. 
-
-A5_TimeFromLastInteraction_Vs_CategoricalStepSize contains code used to test whether elapsed time since the last infant-adult interaction predict 
-categorical step sizes between consecutive vocalisations by infant speakers.
-
-    [Note to self: Link schematics and data tables (either on OSF or here) and refer to them]
     
     
