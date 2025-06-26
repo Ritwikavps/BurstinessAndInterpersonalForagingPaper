@@ -3,7 +3,7 @@
 ***Please direct all questions about the code in this repository to ritwika@ucmerced.edu***  
 
 This directory contains code that does the following:
-- extracts, cleans, processes, and analyses day-long recordings of infant and adult caregiver vocalisations for the paper 'Burstiness and Interpersonal Foraging Betweeen Human Infants and Caregivers in the Vocal Domain' and associated projects
+- extracts, cleans, processes, and analyses day-long recordings of infant and adult caregiver vocalisations for the paper 'Burstiness and Interpersonal Foraging Betweeen Human Infants and Caregivers in the Vocal Domain', the pre-print for the same paper (https://arxiv.org/abs/2505.01545), and associated projects
 - performs validation of the LENA automatic labelling using human listener-labelled data
 - plots all figures in the paper 'Burstiness and Interpersonal Foraging Betweeen Human Infants and Caregivers in the Vocal Domain' and associated supplementary file
 
@@ -28,3 +28,8 @@ Please make sure that all paths are correct before executing scripts.
 
 To the best of the author's knowledge, lines of code where paths might need changing or other important notes are present have been demarcated by `%-------------------------------------------` (in MATLAB) or `#########################################################` (in R) above and below the block of code/comments that require the reader's attention. 
 ##
+
+Some notes about terminology used in the code:  
+- The terms IEI and IVI are used interchangeably to mean inter-event intervals (as described in teh Burstiness paper and pre-print) and equivalents, inter-vocalisation intervals, in that the relevant events are vocalisations.
+- The Burstiness paper and pre-print use the short-hands `ChSp` (infant speech-related), `ChNsp` (infant non-speech-realated), and `Ad` (adult) for vocalisation types analysed in or relevant to the study. Throughout the code, however, these vocalisations are indicated using the short-hands `CHNSP` (infant speech-related), `CHNNSP` (infant non-speech-realated), and `AN` (adult). In addition, `CHN` indicates the combined `CHNSP` (infant speech-related) and `CHNNSP` (infant non-speech-realated) category.
+
