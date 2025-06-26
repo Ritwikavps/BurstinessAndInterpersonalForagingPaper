@@ -1,5 +1,4 @@
-clear all
-clc
+clear; clc
 
 % This script goes through all 3 sets of daat (LENA day-long, human label 5 min, and corresponding LENA 5 min) and merges vocs of a given speaker type separated by 0 IVI. 
 % Note that we treat CHNSP, CHNNSP, and AN (both FAN and MAN together) speaker types differently.
