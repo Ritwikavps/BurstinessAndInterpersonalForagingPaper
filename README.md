@@ -13,6 +13,8 @@ Data files with potentially identifying information are not available publicly. 
 
 The directory names are indexed as A1, A2, etc. to indicate the suggested order to follow. See relevant `README` files in each directory for details about the contents of each directory. See below for a broad overview of the contents of each directory.
 
+Some processing scripts before `A4_DataAnalysis` will only write output files only if the file does not exist in the specified location. As such, I recommend deleting or moving previously existing files before executing scripts in folder before `A4_DataAnalysis`.
+
 `A1_LENADataProcessing` contains code to extract LENA labels as well as acoustics from .wav and .its files (MATLAB, Bash, and R). Code in this directory also generates a metadata file for the LENA data. The final processed data obtained from the pipeline in this directory can be found at https://osf.io/5xp7z/
 
 `A2_HUMLabelDataCleanUp` contains code to clean-up human listener annotated data (R, MATLAB, Bash, and Perl).
@@ -32,4 +34,5 @@ To the best of the author's knowledge, lines of code where paths might need chan
 Some notes about terminology used in the code:  
 - The terms IEI and IVI are used interchangeably to mean inter-event intervals (as described in teh Burstiness paper and pre-print) and equivalents, inter-vocalisation intervals, in that the relevant events are vocalisations.
 - The Burstiness paper and pre-print use the short-hands `ChSp` (infant speech-related), `ChNsp` (infant non-speech-realated), and `Ad` (adult) for vocalisation types analysed in or relevant to the study. Throughout the code, however, these vocalisations are indicated using the short-hands `CHNSP` (infant speech-related), `CHNNSP` (infant non-speech-realated), and `AN` (adult). In addition, `CHN` indicates the combined `CHNSP` (infant speech-related) and `CHNNSP` (infant non-speech-realated) category.
+
 
