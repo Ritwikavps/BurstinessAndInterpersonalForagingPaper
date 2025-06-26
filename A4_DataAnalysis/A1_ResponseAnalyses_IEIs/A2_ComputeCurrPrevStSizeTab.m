@@ -1,5 +1,4 @@
-clear all
-clc
+clear; clc
 %Ritwika VPS, UCLA Comm, Sep 2023; updated Dec 2023
 
 % This script and associated functions take vocalisation data, compute response recived or not for a specified response interval, and output 
