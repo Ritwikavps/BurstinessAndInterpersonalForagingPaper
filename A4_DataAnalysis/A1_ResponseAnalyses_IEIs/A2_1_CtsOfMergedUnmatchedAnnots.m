@@ -1,5 +1,4 @@
-clear all
-clc
+clear; clc
 
 %Ritwika VPS; June 2024
 %This script identifies cases (for the human listener labelled data ONLY) where the annotations for vocs that were merged due to an intervening 0 IVI do not matcg. For eg, if two Adult 
