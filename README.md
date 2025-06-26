@@ -32,7 +32,7 @@ To the best of the author's knowledge, lines of code where paths might need chan
 ##
 
 Some notes about terminology used in the code:  
-- The terms IEI and IVI are used interchangeably to mean inter-event intervals (as described in teh Burstiness paper and pre-print) and equivalents, inter-vocalisation intervals, in that the relevant events are vocalisations.
+- The terms IEI and IVI are used interchangeably to mean inter-event intervals (as described in the Burstiness paper and pre-print) and equivalents, inter-vocalisation intervals, in that the relevant events are vocalisations.
 - The Burstiness paper and pre-print use the short-hands `ChSp` (infant speech-related), `ChNsp` (infant non-speech-realated), and `Ad` (adult) for vocalisation types analysed in or relevant to the study. Throughout the code, however, these vocalisations are indicated using the short-hands `CHNSP` (infant speech-related), `CHNNSP` (infant non-speech-realated), and `AN` (adult). In addition, `CHN` indicates the combined `CHNSP` (infant speech-related) and `CHNNSP` (infant non-speech-realated) category.
 
 
