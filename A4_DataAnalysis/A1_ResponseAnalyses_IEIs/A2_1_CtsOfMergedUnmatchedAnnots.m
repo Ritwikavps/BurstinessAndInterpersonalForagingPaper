@@ -66,7 +66,9 @@ function [AnVocMergeCtr, ChnspVocMergeCtr, ChnnspVocMergeCtr] = GetMixedAnnotMer
     
             for j = 1:numel(height(MergedLines)) %go through the list of merged lines
                 %For each merged voc, get the corresponding set of unmerged vocs, where successive vocs are sepaarted by 0 Ivi. 
-                UnmergedSubset = UnmergedLines(UnmergedLines.start >= MergedLines.start(j) & UnmergedLines.xEnd <= MergedLines.xEnd(j),:);
+                UnmergedSubset = UnmergedLines(UnmergedLines.start >= MergedLines.start(j) & UnmergedLines.xEnd <= MergedLines.xEnd(j)...
+                    & strcmp(UnmergedLines.FileNameUnMerged,MergedLines.FileNameUnMerged{j}) ...
+                    & (UnmergedLines.SectionNum == MergedLines.SectionNum(j)),:);
                 if numel(unique(UnmergedSubset.speaker)) > 1 %if there is more than one speaker type, throw error
                     error('More than one speaker type in the unmerged set of vocs corresponding to a merged voc')
                 end
