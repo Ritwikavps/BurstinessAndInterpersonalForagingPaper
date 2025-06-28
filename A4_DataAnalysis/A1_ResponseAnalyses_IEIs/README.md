@@ -1,7 +1,5 @@
 This directory contains all analysis code for results reported in the Burstiness paper and pre-print.
 
-Only files with the prefixes A1, A2, etc. are executables, while all other files are supporting functions. The executable files need to be executed in the order of prefixes A1, A2, etc. All data required to run these scripts and all analyses results from these scripts are available in the OSF reporsitory associated with this project (see main repository `README` for details). For details on output files for each executable script as well as data organisation, see `Metadata_CodeAndFiles.xlsx` and `README_FileAndDirectoryDetails.docx` (available in this repository as well as in the associated OSF repository).  
-
 `A1_RemoveAcoustics_Merge0Ivis.m` removes acoustics information from data used in these analyses (since we do not perform acoustics analyses in this work; however, the acoustics data is part of the data processing pipeline and is used in associated, ongoing work) and merges vocalisations of the same speaker label type separated by 0 s IEIs. Requires `MergeZeroIviVocsAndGetTSOnlyTab.m`.
 
 `A2_1_CtsOfMergedUnmatchedAnnots.m` computes the total number of instances where during the 0 s IEI merging, vocalisations with different annotation labels but the same speaker label were merged. This only applies to human listener-labelled data, is intended to only provide information, and does not affect the analyses presented. 
