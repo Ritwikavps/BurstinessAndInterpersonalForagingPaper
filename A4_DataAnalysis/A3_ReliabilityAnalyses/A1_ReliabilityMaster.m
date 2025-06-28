@@ -1,5 +1,4 @@
-clear all
-clc
+clear; clc
 
 %Ritwika VPS, June 2024, UCLA Comm
 %Reliability code: this script estimates reliability measures between human-listener labelled 5 minute sections and corresponding LENA sections, by computing the following metrics:
