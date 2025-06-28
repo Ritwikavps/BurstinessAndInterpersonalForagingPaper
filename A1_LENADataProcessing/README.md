@@ -1,7 +1,5 @@
 This directory contains all pre-processing code used to prepare LENA data for analyses reported in this study. 
 
-Only files with the prefixes A1, A2, etc. are executables, while all other files are supporting functions. The executable files need to be executed in the order of prefixes A1 to A7. Finally, files with prefixes A1-A7 require access to data that has potentially identifying information and hence, is only provided to orient the reader, since access to this data is restricted. See the OSF repository associated with this project for all publicly shared data and metadata files associated with this project. For details on output files for each executable script (and which of those output files are shared publicly) as well as data organisation, see `Metadata_CodeAndFiles.xlsx` and `README_FileAndDirectoryDetails.docx` (available in this repository as well as in the associated OSF repository). 
-
 `A1_CopyItsFilestoFolder.m` copies .its files for each infant to a single common directory. Also creates .csv files with filename and infant ID info.
 
 `A2_WriteInfantAgeCsv.R` parses .its files to compute infant age and write this information to a .csv file. Requires supporting function file `ItsParsingFnsForInfantAge.R`
