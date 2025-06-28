@@ -180,7 +180,7 @@ function [ReliabilityNumsTab,LabelSetIntersectNums_Cell,NumDenom_Prec_RowVec_Cel
                         % because in getting the 1 ms seconds, we including every 1 ms from the start to teh end of the section to be annotated (i.e, the entire five minute stretch) per 
                         % the coding spreadsheet.
                         LSub = Lfile(Lfile.start >= CodingSubsheet.StartTimeSS(j) &   Lfile.xEnd <= CodingSubsheet.EndTimeSS(j),:); 
-                        if ~isempty(HSub) && ~isempty(LSub) && strcmp(HSub.FnameUnmerged{1},LSub.FnameUnmerged{1})%if both subsetted tables are NOT empty AND if the unmerged file name
+                        if ~isempty(HSub) && ~isempty(LSub) && strcmp(HSub.FileNameUnMerged{1},LSub.FileNameUnMerged{1})%if both subsetted tables are NOT empty AND if the unmerged file name
                             %matches for human listener label vs LENA label
                             Ctr = Ctr + 1; %increment counter
                             Fname{Ctr,1} = FnameRoot;
@@ -197,7 +197,7 @@ function [ReliabilityNumsTab,LabelSetIntersectNums_Cell,NumDenom_Prec_RowVec_Cel
 
                         elseif isempty(HSub) && isempty(LSub) 
                             warning('Section not annotated: %s',FnameRoot)
-                        elseif ~strcmp(HSub.FnameUnmerged{1},LSub.FnameUnmerged{1})
+                        elseif ~strcmp(HSub.FileNameUnMerged{1},LSub.FileNameUnMerged{1})
                             warning('Wow, unmerged file names do not match between human labelled and LENA labelled file: %s', FnameRoot)
                         end
                     end
