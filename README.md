@@ -3,11 +3,13 @@
 ***Please direct all questions about the code in this repository to ritwika@ucmerced.edu***  
 
 This directory contains code that does the following:
-- extracts, cleans, processes, and analyses day-long recordings of infant and adult caregiver vocalisations for the paper 'Burstiness and Interpersonal Foraging Betweeen Human Infants and Caregivers in the Vocal Domain', the pre-print for the same paper (https://arxiv.org/abs/2505.01545), and associated projects
+- extracts, cleans, processes, and analyses day-long recordings of infant and adult caregiver vocalisations for the paper 'Burstiness and Interpersonal Foraging Betweeen Human Infants and Caregivers in the Vocal Domain', the [pre-print](https://arxiv.org/abs/2505.01545) for the same paper, and associated projects
 - performs validation of the LENA automatic labelling using human listener-labelled data
 - plots all figures in the paper 'Burstiness and Interpersonal Foraging Betweeen Human Infants and Caregivers in the Vocal Domain' and associated supplementary file
 
 Languages: MATLAB (R2024b), R (version 4.2.0 (2022-04-22) -- "Vigorous Calisthenics"), Bash, Perl
+
+Audio, `.its` files, and other relevant files for recordings for participants who gave permission for their data to be shared are available on [HomeBank](https://doi.org/10.21415/T54S3C). De-identified time series data and all downstream analyses and processing outputs are available for all participants for both day-long LENA labelled data, 5-minute human listener labelled data, and the corresponding LENA-labelled subset are available on the OSF repository](https://osf.io/5xp7z/) associated with this project. Raw `.eaf` files for the human listener annotations are not currently publicly shared.
 
 ##  
 
