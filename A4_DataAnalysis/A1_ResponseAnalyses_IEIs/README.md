@@ -12,7 +12,7 @@ This directory contains all analysis code for results reported in the Burstiness
 
 `A5_LmerAgeEffectsOnPrevStSizeAndResponseBetas.R` performs age effects analyses on recording level previous IEI betas, as well as response betas with and without the previous IEI control for all datasets presented in the study. Requires `GetLmerCoeffsForAgeEffects.R`.
 
-`A6_GetAgeLvlPrevIviLmerBetasResidualsTransformedIvis_Lday.R` performs the previous IEI control step at the age-block level (3, 6, 9, and 18 months) for the LENA daylong data to generate residual IEIs as well as previous IEI betas and intercepts for the regression. The generated data is used for visualisation and used in Fig. 1 in the Burstiness paper as well as associated supplementary figures. 
+`A6_GetAgeLvlPrevIviLmerBetasResidualsTransformedIvis_Lday.R` performs the previous IEI control step at the age-block level (3, 6, 9, and 18 months) for the LENA daylong data to generate residual IEIs as well as previous IEI betas and intercepts for the regression. The generated data is used for visualisation and used in Fig. 1 (Fig. 2 in the pre-print) in the Burstiness paper as well as associated supplementary figures. 
 
 For more specific details, please read comments about paths and other notes in the files before executing them.
 
