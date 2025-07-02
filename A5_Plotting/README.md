@@ -1,10 +1,10 @@
-This directory contains code written to generate most of the figures presented in the Burstiness paper/pre-print (some figures are generated using scripts in `A2_DataSummaryAnalyses`. The `README` in the relevant directory highlights these instances).
+This directory contains code written to generate most of the figures presented in the Burstiness paper (some figures are generated using scripts in `A2_DataSummaryAnalyses`. The `README` in the relevant directory highlights these instances).
 
 `Fig1_MainTxt_AndAssociatedSIFigs.m` generates the non-schematic portions of Fig. 1 in the main text (Fig. 2 in the pre-print) + Supplementary Figs. S23-S26.
 
 `Fig2_MainTxt_PrevStSiBeta.m` generates Fig. 2 in the main text (Fig. 3 in the pre-print). Requires `DrawLineAndPatchForCI.m` and `GetPrevStSiEffFig.m`.
 
-`Fig3_MainTxtAndAssociatedSuppFigs_RespBeta.m` generates Fig 3 in the main text (Fig. 4 in pre-print) + Supplementary Figs. S30 and S31. Requires `GetRespBetaFigs.m` and `GetRespBetaFigs_SI.m`.
+`Fig3_MainTxtAndAssociatedSuppFigs_RespBeta.m` generates Fig 3 in the main text (Fig. 4 in the pre-print) + Supplementary Figs. S30 and S31. Requires `GetRespBetaFigs.m` and `GetRespBetaFigs_SI.m`.
 
 `SI_FigS1_DataSummary_AgeDistributionPlots.m` generates supplementary figure S1.
 
