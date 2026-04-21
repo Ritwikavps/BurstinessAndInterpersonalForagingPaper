@@ -1,7 +1,8 @@
 #Ritwika VPS, Feb 2024
-#This script generates the data to plot data viz schematics plots in Fig 1: the Curr IVI vs Prev IVI plot as well as the WR/WOR residuals plot. Note that this 
-#function does this for all data we have (LENA day-long, LENA 5 min, human listener labelled 5 minute with child directed adult voc ONLY, and human liostener
-#labelled 5 min data with all adult vocs; and ANRespToCHNSP and CHNSPRespToAN for all these data types), at the recording day level
+#This script generates a table with current and previous IEIs (raw and transformed) as well residuals of the previous IEI control analysis at the 
+#recording level. This table is also used (using a different .R script) to estimate the slopes and intercepts for the Curr IEI vs prev IEI plot 
+#in the main text by grouping the LENA daylong IEIs by age and performing the previous IEI regression (which is admittedly a roundabout way of
+#doing this, but this is what the pipeline ended up being and I am not inclined to change this now xD)
 
 library(tidyverse); library(lme4); library(pracma); library(sjmisc); #get libraries
 #source user-defined function

@@ -99,6 +99,11 @@ GetRespEff_IVI_w_PrevStSiCtrl_LENA <- function(FilesToLoad,RespToSpkr,CILvl){
   InfAge_Months <- c(); RespWin_Seconds <- c() #initialise vectors to iteratively store output in; #StepVar <- c(); 
   PrevSt_Beta <- c(); PrevStP <- c(); PrevStCI_Lwr <- c(); PrevStCI_Upper <- c()
   Response_Beta <- c(); ResponseP <- c(); ResponseCI_Lwr <- c(); ResponseCI_Upper <- c()
+  NumObs_PrevStMdl <- c(); NumObs_RespMdl <- c(); #Number of observations
+  MargR2_PrevStMdl <- c(); CondR2_PrevStMdl <- c(); #note that teh marginal Rsq is the proportion of variance explained by the
+  #fixed effects only while the conditional Rsq is the proportion of variance explained by the fixed and random effects combined
+  Rsq_RespMdl <- c(); #Because the response model is always a simple IEI residual ~ response variable linear model, we don't report
+  #adjusted rsq
   Ctr <- 0; #initialise counter variable
   
   for (i in FilesToLoad){ #go through file list
@@ -116,6 +121,11 @@ GetRespEff_IVI_w_PrevStSiCtrl_LENA <- function(FilesToLoad,RespToSpkr,CILvl){
         
         for (j in 1:numel(RespWindowVals)){ #Go through the different response windows
           
+          fprintf('\n')
+          fprintf('-------------------------------------------------------------------------------------------------------------\n')
+          fprintf('File being analysed: %s; response type: %s; infant age = %i; response window value = %s seconds \n',
+                  i, RespToSpkr, k, RespWindowVals[j])
+          
           Ctr <- Ctr + 1 #increment counter
           ResponseForAge_k <- SubsetTab[,j] #get j-th response vector for j-th response window value; Note that indexing this way makes it so that responseForAge_k is a tibble 
           #with one column, and the column name from SubsetTab is preserved
@@ -123,7 +133,14 @@ GetRespEff_IVI_w_PrevStSiCtrl_LENA <- function(FilesToLoad,RespToSpkr,CILvl){
           #run just prev IVI model and get residuals
           LmerMdl_PrevSt <- lmer(scale(CurrVar) ~ (1|IDforAge_k) + scale(PrevVar),na.action=na.exclude) #exclude NA values of the input variables, if any, in the fit
           PrevStSummary <- summary(LmerMdl_PrevSt); PrevStCIs <- confint(LmerMdl_PrevSt,level = CILvl)
+          PrevStMdlRsq <- r2(LmerMdl_PrevSt) #estimates marginal and conditional Rsq
           ResidVar <- resid(LmerMdl_PrevSt)
+          
+          fprintf('Previous IEI control model results: \n')
+          print(PrevStSummary)
+          fprintf('\n')
+          fprintf('Previous IEI control confidence intervals: \n')
+          print(PrevStCIs)
           
           TabForLm <- tibble(ResidVar,ResponseForAge_k) #get table for linear model so we can subset only non-NaN responses
           colnames(TabForLm)[2] <- 'CurrRespVar' #rename the second column to a standard name as opposed to the preserved column name from SubsetTab
@@ -134,8 +151,18 @@ GetRespEff_IVI_w_PrevStSiCtrl_LENA <- function(FilesToLoad,RespToSpkr,CILvl){
           LmMdl_Resp <- lm(scale(LmSubsetTab$ResidVar) ~ ResponseForLm) #+ poly(Age,2,raw = TRUE) + poly(Age,2,raw = TRUE)*ResponseForLm)
           RespSummary <- summary(LmMdl_Resp); RespCIs <- confint(LmMdl_Resp,level = CILvl)
           
+          fprintf('Response effect model results: \n')
+          print(RespSummary)
+          fprintf('\n')
+          fprintf('Response effect confidence intervals: \n')
+          print(RespCIs)
+          
           #store results
           RespWin_Seconds[Ctr] <- as.numeric(RespWindowVals[j]); InfAge_Months[Ctr] <- k #StepVar[Ctr] <- gsub('Curr','',colnames(SubsetTab)[j]); 
+          NumObs_PrevStMdl[Ctr] <- nobs(LmerMdl_PrevSt); NumObs_RespMdl[Ctr] <- nobs(LmMdl_Resp)
+          MargR2_PrevStMdl[Ctr] <- PrevStMdlRsq$R2_marginal; CondR2_PrevStMdl[Ctr] <- PrevStMdlRsq$R2_conditional
+          Rsq_RespMdl[Ctr] <- RespSummary$r.squared
+          
           PrevSt_Beta[Ctr] <- PrevStSummary$coefficients[2,1] 
           PrevStP[Ctr] <- PrevStSummary$coefficients[2,5] 
           PrevStCI_Lwr[Ctr] <- PrevStCIs[4,1]
@@ -153,7 +180,9 @@ GetRespEff_IVI_w_PrevStSiCtrl_LENA <- function(FilesToLoad,RespToSpkr,CILvl){
   
   OpTab <- tibble(RespWin_Seconds,InfAge_Months,
                   PrevSt_Beta,PrevStP,PrevStCI_Lwr,PrevStCI_Upper,
-                  Response_Beta,ResponseP,ResponseCI_Lwr,ResponseCI_Upper)
+                  Response_Beta,ResponseP,ResponseCI_Lwr,ResponseCI_Upper,
+                  NumObs_PrevStMdl, NumObs_RespMdl,
+                  MargR2_PrevStMdl, CondR2_PrevStMdl,Rsq_RespMdl)
   return(OpTab)
 }
 
@@ -177,6 +206,11 @@ GetRespEff_IVI_w_PrevStSiCtrl_ValData <- function(FilesToLoad,RespToSpkr,CILvl){
   #the validation and LENA tables, so we have this for consistency)
   PrevSt_Beta <- c(); PrevStP <- c(); PrevStCI_Lwr <- c(); PrevStCI_Upper <- c()
   Response_Beta <- c(); ResponseP <- c(); ResponseCI_Lwr <- c(); ResponseCI_Upper <- c()
+  NumObs_PrevStMdl <- c(); NumObs_RespMdl <- c(); #Number of observations
+  MargR2_PrevStMdl <- c(); CondR2_PrevStMdl <- c(); #note that teh marginal Rsq is the proportion of variance explained by the
+  #fixed effects only while the conditional Rsq is the proportion of variance explained by the fixed and random effects combined
+  Rsq_RespMdl <- c(); #Because the response model is always a simple IEI residual ~ response variable linear model, we don't report
+  #adjusted rsq
   Ctr <- 0; #initialise counter variable
   
   for (i in FilesToLoad){ #go through file list
@@ -192,13 +226,24 @@ GetRespEff_IVI_w_PrevStSiCtrl_ValData <- function(FilesToLoad,RespToSpkr,CILvl){
       
       for (j in 1:numel(RespWindowVals)){ #Go through the different response windows
         
-        #print(j)
+        fprintf('\n')
+        fprintf('-------------------------------------------------------------------------------------------------------------\n')
+        fprintf('File being analysed: %s; response type: %s; response window value = %s seconds (infant 
+                ages are pooled together for validation data) \n',i, RespToSpkr, RespWindowVals[j])
+        
         Ctr <- Ctr + 1 #update Ctr
         
         #run just prev var model and get residuals
         LmerMdl_PrevSt <- lmer(scale(CurrVar) ~ (1|ID) + (1|AgeVar) + (1|AgeVar:ID) + scale(PrevVar),na.action=na.exclude)
         PrevStSummary <- summary(LmerMdl_PrevSt); PrevStCIs <- confint(LmerMdl_PrevSt,level = CILvl)
+        PrevStMdlRsq <- r2(LmerMdl_PrevSt) #estimates marginal and conditional Rsq
         ResidVar <- resid(LmerMdl_PrevSt)
+        
+        fprintf('Previous IEI control model results: \n')
+        print(PrevStSummary)
+        fprintf('\n')
+        fprintf('Previous IEI control confidence intervals: \n')
+        print(PrevStCIs)
         
         TabForLm <- tibble(ResidVar,DataTab[,j]) #get table for linear model so we can subset only non-NaN responses; Note that for the response vector, we just index the get j-th response vector from DataTab
         #for j-th response window value. Indexing this way makes it so that the column name from DataTab is preserved
@@ -210,8 +255,18 @@ GetRespEff_IVI_w_PrevStSiCtrl_ValData <- function(FilesToLoad,RespToSpkr,CILvl){
         LmMdl_Resp <- lm(scale(LmSubsetTab$ResidVar) ~ ResponseForLm) #+ poly(Age,2,raw = TRUE) + poly(Age,2,raw = TRUE)*ResponseForLm)
         RespSummary <- summary(LmMdl_Resp); RespCIs <- confint(LmMdl_Resp,level = CILvl)
         
+        fprintf('Response effect model results: \n')
+        print(RespSummary)
+        fprintf('\n')
+        fprintf('Response effect confidence intervals: \n')
+        print(RespCIs)
+        
         #store results
         RespWin_Seconds[Ctr] <- as.numeric(RespWindowVals[j]); InfAge_Months[Ctr] <- NA
+        NumObs_PrevStMdl[Ctr] <- nobs(LmerMdl_PrevSt); NumObs_RespMdl[Ctr] <- nobs(LmMdl_Resp)
+        MargR2_PrevStMdl[Ctr] <- PrevStMdlRsq$R2_marginal; CondR2_PrevStMdl[Ctr] <- PrevStMdlRsq$R2_conditional
+        Rsq_RespMdl[Ctr] <- RespSummary$r.squared
+        
         PrevSt_Beta[Ctr] <- PrevStSummary$coefficients[2,1] 
         PrevStP[Ctr] <- PrevStSummary$coefficients[2,5] 
         PrevStCI_Lwr[Ctr] <- PrevStCIs[6,1]
@@ -228,7 +283,9 @@ GetRespEff_IVI_w_PrevStSiCtrl_ValData <- function(FilesToLoad,RespToSpkr,CILvl){
   
   OpTab <- tibble(RespWin_Seconds,InfAge_Months,
                   PrevSt_Beta,PrevStP,PrevStCI_Lwr,PrevStCI_Upper,
-                  Response_Beta,ResponseP,ResponseCI_Lwr,ResponseCI_Upper)
+                  Response_Beta,ResponseP,ResponseCI_Lwr,ResponseCI_Upper,
+                  NumObs_PrevStMdl, NumObs_RespMdl,
+                  MargR2_PrevStMdl, CondR2_PrevStMdl,Rsq_RespMdl)
   return(OpTab)
 }
 
@@ -245,6 +302,10 @@ GetRespEff_IVI_NoPrevStSiCtrl_LENA <- function(FilesToLoad,RespToSpkr,CILvl){
   
   InfAge_Months <- c(); RespWin_Seconds <- c() #initialise vectors to iteratively store output in
   Response_Beta <- c(); ResponseP <- c(); ResponseCI_Lwr <- c(); ResponseCI_Upper <- c()
+  NumObs <- c(); #Number of observations
+  MargR2 <- c(); CondR2 <- c(); #note that teh marginal Rsq is the proportion of variance explained by the
+  #fixed effects only while the conditional Rsq is the proportion of variance explained by the fixed and random effects combined
+
   Ctr <- 0; #initialise counter variable
   
   for (i in FilesToLoad){ #go through file list
@@ -260,6 +321,11 @@ GetRespEff_IVI_NoPrevStSiCtrl_LENA <- function(FilesToLoad,RespToSpkr,CILvl){
         
         for (j in 1:numel(RespWindowVals)){ #Go through the different response windows
           
+          fprintf('\n')
+          fprintf('-------------------------------------------------------------------------------------------------------------\n')
+          fprintf('File being analysed: %s; response type: %s; infant age = %i; response window value = %s seconds \n',
+                  i, RespToSpkr, k, RespWindowVals[j])
+          
           Ctr <- Ctr + 1
           SubsetForCurrRespWin <- tibble(SubsetTab$CurrIVI,SubsetTab$InfantID,SubsetTab[,j]) #Get the subsetted table with only the relevant vars: infant id, current
           #IVI, and the response vector for the relavent response window. Note that for the response vector, we just index the j-th response vector from SubsetTab
@@ -272,8 +338,18 @@ GetRespEff_IVI_NoPrevStSiCtrl_LENA <- function(FilesToLoad,RespToSpkr,CILvl){
           
           LmerMdl_Resp <- lmer(scale(CurrVar) ~  RespforLmer + (1|IDforLmer))  #run response effect with random effect for ID
           RespSummary <- summary(LmerMdl_Resp); RespCIs <- confint(LmerMdl_Resp,level = CILvl)
+          RespMdlRsq <- r2(LmerMdl_Resp) #estimates marginal and conditional Rsq
+          
+          fprintf('Response effect model results (note that there is no previous IEI control model prior to this): \n')
+          print(RespSummary)
+          fprintf('\n')
+          fprintf('Response effect confidence intervals: \n')
+          print(RespCIs)
           
           RespWin_Seconds[Ctr] <- as.numeric(RespWindowVals[j]); InfAge_Months[Ctr] <- k
+          NumObs[Ctr] <- nobs(LmerMdl_Resp)
+          MargR2[Ctr] <- RespMdlRsq$R2_marginal; CondR2[Ctr] <- RespMdlRsq$R2_conditional
+          
           Response_Beta[Ctr] <- RespSummary$coefficients[2,1] 
           ResponseP[Ctr] <- RespSummary$coefficients[2,5]
           ResponseCI_Lwr[Ctr] <- RespCIs[4,1]
@@ -285,7 +361,8 @@ GetRespEff_IVI_NoPrevStSiCtrl_LENA <- function(FilesToLoad,RespToSpkr,CILvl){
   }
   
   OpTab <- tibble(RespWin_Seconds, InfAge_Months,
-                  Response_Beta,ResponseP,ResponseCI_Lwr,ResponseCI_Upper)
+                  Response_Beta,ResponseP,ResponseCI_Lwr,ResponseCI_Upper,
+                  NumObs, MargR2, CondR2)
   return(OpTab)
 }
 
@@ -304,6 +381,9 @@ GetRespEff_IVI_NoPrevStSiCtrl_ValData <- function(FilesToLoad,RespToSpkr,CILvl){
   
   InfAge_Months <- c(); RespWin_Seconds <- c() #initialise vectors to iteratively store output in
   Response_Beta <- c(); ResponseP <- c(); ResponseCI_Lwr <- c(); ResponseCI_Upper <- c()
+  NumObs <- c(); #Number of observations
+  MargR2 <- c(); CondR2 <- c(); #note that teh marginal Rsq is the proportion of variance explained by the
+  #fixed effects only while the conditional Rsq is the proportion of variance explained by the fixed and random effects combined
   Ctr <- 0; #initialise counter variable
   
   for (i in FilesToLoad){ #go through file list
@@ -315,6 +395,11 @@ GetRespEff_IVI_NoPrevStSiCtrl_ValData <- function(FilesToLoad,RespToSpkr,CILvl){
       
       for (j in 1:numel(RespWindowVals)){ #Go through the different response windows
       
+        fprintf('\n')
+        fprintf('-------------------------------------------------------------------------------------------------------------\n')
+        fprintf('File being analysed: %s; response type: %s; response window value = %s seconds (infant 
+                ages are pooled together for validations data) \n',i, RespToSpkr, RespWindowVals[j])
+        
         Ctr <- Ctr + 1
         SubsetTab <- tibble(DataTab$CurrIVI,DataTab$InfantID,DataTab$AgeMonths,DataTab[,j]) #Get the subsetted table with only the relevant vars: infant id, current
         #IVI, and the response vector for the relavent response window. Note that for the response vector, we just index the j-th response vector from SubsetTab
@@ -327,8 +412,18 @@ GetRespEff_IVI_NoPrevStSiCtrl_ValData <- function(FilesToLoad,RespToSpkr,CILvl){
         
         LmerMdl_Resp <- lmer(scale(CurrVar) ~ ResponseVar + (1|ID) + (1|AgeVar) + (1|ID:AgeVar))  #run response effect on residuals
         RespSummary <- summary(LmerMdl_Resp); RespCIs <- confint(LmerMdl_Resp,level = CILvl)
+        RespMdlRsq <- r2(LmerMdl_Resp) #estimates marginal and conditional Rsq
+        
+        fprintf('Response effect model results (note that there is no previous IEI control model prior to this): \n')
+        print(RespSummary)
+        fprintf('\n')
+        fprintf('Response effect confidence intervals: \n')
+        print(RespCIs)
         
         RespWin_Seconds[Ctr] <- as.numeric(RespWindowVals[j]); InfAge_Months[Ctr] <- NA
+        NumObs[Ctr] <- nobs(LmerMdl_Resp)
+        MargR2[Ctr] <- RespMdlRsq$R2_marginal; CondR2[Ctr] <- RespMdlRsq$R2_conditional
+        
         Response_Beta[Ctr] <- RespSummary$coefficients[2,1] 
         ResponseP[Ctr] <- RespSummary$coefficients[2,5]
         ResponseCI_Lwr[Ctr] <- RespCIs[6,1]
@@ -339,6 +434,7 @@ GetRespEff_IVI_NoPrevStSiCtrl_ValData <- function(FilesToLoad,RespToSpkr,CILvl){
   }
   
   OpTab <- tibble(RespWin_Seconds, InfAge_Months,
-                  Response_Beta,ResponseP,ResponseCI_Lwr,ResponseCI_Upper)
+                  Response_Beta,ResponseP,ResponseCI_Lwr,ResponseCI_Upper,
+                  NumObs, MargR2, CondR2)
   return(OpTab)
 }

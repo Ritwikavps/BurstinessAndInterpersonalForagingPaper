@@ -59,7 +59,7 @@ for i = 1:numel(u_SecNum) %go through each section number
         Curr_TempTab = Curr_TempTab(2:end,:); %get rows corresponding to current IVI (so starting from the second row)
         Prev_TempTab = TempTab(:,end); %get PrevIvi cols
         %Variable names for Prev_TempTab at this point are [InterVocIntVec]
-        Prev_TempTab = Prev_TempTab(1:end-1,:); %get rows corresponding to prev IVI (so starting from the second row)
+        Prev_TempTab = Prev_TempTab(1:end-1,:); %get rows corresponding to prev IVI (so starting from first row and ending at the penultimate row)
     
         %recast var names
         Curr_TempTab.Properties.VariableNames = TabVarNames_Curr; %Variable names for Curr_TempTab at this point are [[response vars 0.5 to 10], CurrIVI]

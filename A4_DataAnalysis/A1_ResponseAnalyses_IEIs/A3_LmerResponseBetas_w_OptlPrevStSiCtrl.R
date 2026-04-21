@@ -4,7 +4,8 @@
 #min sections
 
 #load required librarues
-library(lme4); library(lmerTest); library(pracma); library(sjmisc); library(tidyverse)
+library(lme4); library(lmerTest); library(pracma); library(sjmisc); library(tidyverse); library(performance) #to compute Rsq for lmer
+#ref: A general and simple method for obtaining R2 from generalized linear mixed-effects models. Nakagawa and Holger 
 
 #source necessary functions
 source('~/Desktop/GoogleDriveFiles/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/CodeForGitHub/A4_DataAnalysis/A1_ResponseAnalyses_IEIs/GetLmerCoeffsForResponseBetas_w_OptlPrevStSizeCtrl.R')
@@ -12,6 +13,7 @@ source('~/Desktop/GoogleDriveFiles/research/IVFCRAndOtherWorkWithAnne/Pre_regist
 FilePattern <- '.*IviOnly.csv' #this is the string to pick out relevant files (See user-deifned fn WriteOpToFile_RespEffBetas for details)
 CILvl <- 99.9 #specify desired confidence interval in the form of a percent value. That is, for 95% confidence intervals, CILvl = 95 (correponding to 
 # a p-value alpha threshold = 0.05) and so on and so forth
+CIStr <- gsub('\\.','_',strcat(as.character(CILvl),'prc')) #convert the CILvl to a string, add 'prc' to signify percent, then sub the decimal point ('.')
 WriteOpPath <- '~/Desktop/GoogleDriveFiles/research/IVFCRAndOtherWorkWithAnne/Pre_registration_followu/Data/ResultsTabs/ResponseAnalyses/'
 #-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #LENA day-long files
@@ -35,8 +37,19 @@ WorkingDir <- c(WorkingDir_LENA,  WorkingDir_LENA5min,  WorkingDir_Hum_AllAd,   
 DataType <- c(DataType_LENA,      DataType_LENA5min,    DataType_Hum_AllAd,     DataType_Hum_ChildDirAd)
 
 for (PrevStSiCtrlorNo in c('wCtrl','woCtrl')){ #
+  if (strcmp(PrevStSiCtrlorNo,'wCtrl')){
+    CtrlTxtInSinkFileName = '_W_'
+  } else if (strcmp(PrevStSiCtrlorNo,'woCtrl')){
+    CtrlTxtInSinkFileName = '_No'
+  }
+  SinkFileName = paste(WriteOpPath,'RespEff',CtrlTxtInSinkFileName,'PrevStSizCtrl_VarsScaleLog_CorpusLvl_IviOnly_CI',CIStr,'_ModelResultsDetails.txt',sep='')
+  #print(PrevStSiCtrlorNo)
+  #print(SinkFileName)
+  sink(SinkFileName)
   WriteOpToFile_RespEffBetas(WorkingDir,FilePattern,DataType,WriteOpPath,PrevStSiCtrlorNo,CILvl)
+  sink() #close sink
 }
+
 
 
 

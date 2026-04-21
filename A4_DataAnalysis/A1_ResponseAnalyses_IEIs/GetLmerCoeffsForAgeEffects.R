@@ -25,6 +25,8 @@ GetLmerAgeEffOnRespBetaAndWriteOpToFile <- function(RecLvlBetasTab,CILvl,Destina
   Age1Eff <- c(); Age1P <- c(); Age1CI_Lwr <- c(); Age1CI_Upper <- c() #age (linear) results
   Age2Eff <- c(); Age2P <- c(); Age2CI_Lwr <- c(); Age2CI_Upper <- c() #age^2 results
   InterceptVal <- c(); InterceptCI_Lwr <- c(); InterceptCI_Upper <- c()
+  NumObs <- c(); MargR2 <- c(); CondR2 <- c(); #note that teh marginal Rsq is the proportion of variance explained by the
+  #fixed effects only while the conditional Rsq is the proportion of variance explained by the fixed and random effects combined
   
   Ctr <- 0 #intialise counter variable
   
@@ -42,6 +44,11 @@ GetLmerAgeEffOnRespBetaAndWriteOpToFile <- function(RecLvlBetasTab,CILvl,Destina
         for (i_beta in 4:6){ #go through the three effect sizes we are interested in (PrevSt_Beta, Response_Beta_wCtrl,Response_Beta_woCtrl)
           #Note that this indexing is based on how the input table is structured
 
+          fprintf('\n')
+          fprintf('-------------------------------------------------------------------------------------------------------------\n')
+          fprintf('Data type: %s; response type: %s; response window value = %.1f seconds; regression coeff. type: %s \n',
+                  i_dtype, i_spkr, i_rwin, colnames(RecLvlBetasTab)[i_beta])
+          
           Ctr <- Ctr + 1 #increment counter variable
 
           #(This whole bit below is to avoid a weird error in the lmer model; 
@@ -50,17 +57,23 @@ GetLmerAgeEffOnRespBetaAndWriteOpToFile <- function(RecLvlBetasTab,CILvl,Destina
           colnames(TabForLm) <- c('BetaVar','IDVar','AgeVar') #rename vars
           BetaVarForTest <- TabForLm$BetaVar; IDVarForTest <- TabForLm$IDVar; AgeVarForTest <- TabForLm$AgeVar; #assign vars
           
-          print(i_rwin)
-          print(i_spkr)
-          print(i_dtype)
           LmerMdl <- lmer(BetaVarForTest ~  (1|IDVarForTest) + poly(AgeVarForTest,2, raw = TRUE), na.action=na.exclude) #Do lmer test
           LmerSummary <- summary(LmerMdl); 
+          LmerMdlRsq <- r2(LmerMdl) #estimates marginal and conditional Rsq
           LmerCIs <- confint(LmerMdl,level = CILvl) #get stats results
+          
+          fprintf('Age effect model results: \n')
+          print(LmerSummary)
+          fprintf('\n')
+          fprintf('Age effects control confidence intervals: \n')
+          print(LmerCIs)
         
           #store results
           RespWindow_Temp[Ctr] <- i_rwin; BetaType[Ctr] <- colnames(RecLvlBetasTab)[i_beta] 
           DataType_Temp[Ctr] <- i_dtype; Spkr_Temp[Ctr] <- i_spkr
-          
+          NumObs[Ctr] <- nobs(LmerMdl); 
+          MargR2[Ctr] <- LmerMdlRsq$R2_marginal; CondR2[Ctr] <- LmerMdlRsq$R2_conditional
+
           InterceptVal[Ctr] <- LmerSummary$coefficients[1,1]
           InterceptCI_Lwr[Ctr] <- LmerCIs[3,1]
           InterceptCI_Upper[Ctr] <- LmerCIs[3,2]
@@ -85,7 +98,8 @@ GetLmerAgeEffOnRespBetaAndWriteOpToFile <- function(RecLvlBetasTab,CILvl,Destina
   OpTab <- tibble(DataType,SpkrAndResp,RespWindow_s,BetaType,
                   InterceptVal,InterceptCI_Lwr,InterceptCI_Upper,
                   Age1Eff,Age1P,Age1CI_Lwr,Age1CI_Upper,
-                  Age2Eff,Age2P,Age2CI_Lwr,Age2CI_Upper)
+                  Age2Eff,Age2P,Age2CI_Lwr,Age2CI_Upper,
+                  NumObs,MargR2,CondR2)
   
   OpFname <- strcat(DestinationPath,strcat(strcat('AgeEffects_IviOnly_CI',CIStr),'.csv')) #get file name
   write.csv(OpTab, file = OpFname,row.names=FALSE) #write file
